@@ -215,10 +215,22 @@
                 $("#cart-entries").empty();
                 
                 let subtotal = 0;
+                let processedItems = 0;
+                
+                // Debug: In ra dữ liệu giỏ hàng để kiểm tra
+                console.log("Cart data:", data);
                 
                 $.each(data, function(index, cartItem) {
+                    // Kiểm tra itemId có hợp lệ không
+                    if (!cartItem.itemId || typeof cartItem.itemId !== 'string') {
+                        console.error("Invalid itemId in cart:", cartItem);
+                        processedItems++;
+                        return; // Bỏ qua mục này
+                    }
+                    
                     // Get details about the product
-                    $.getJSON('/catalogue/' + cartItem.itemId, {}, function(item) {
+                    $.getJSON('/catalogue/' + cartItem.itemId, {})
+                    .done(function(item) {
                         if (item) {
                             const totalPrice = cartItem.quantity * item.price;
                             subtotal += totalPrice;
@@ -251,7 +263,18 @@
                                     </td>
                                 </tr>
                             `);
-                            
+                        } else {
+                            console.error("Product not found for itemId:", cartItem.itemId);
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus, errorThrown) {
+                        console.error("Error loading product details:", textStatus, errorThrown);
+                    })
+                    .always(function() {
+                        processedItems++;
+                        
+                        // Khi đã xử lý tất cả các mục trong giỏ hàng
+                        if (processedItems === data.length) {
                             // Update order summary
                             updateOrderSummary(subtotal);
                             

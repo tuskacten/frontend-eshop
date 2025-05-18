@@ -91,8 +91,18 @@
    * });
    */
   helpers.simpleHttpRequest = function(url, res, next) {
-    request.get(url, function(error, response, body) {
-      if (error) return next(error);
+    var requestOptions = {
+      url: url,
+      // Bỏ qua xác thực SSL trong môi trường phát triển
+      strictSSL: process.env.NODE_ENV === 'production',
+      rejectUnauthorized: process.env.NODE_ENV === 'production'
+    };
+    
+    request.get(requestOptions, function(error, response, body) {
+      if (error) {
+        console.error("Request error:", error);
+        return next(error);
+      }
       helpers.respondSuccessBody(res, body);
     }.bind({res: res}));
   }

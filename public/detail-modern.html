@@ -34,6 +34,14 @@
     <div id="navbar"></div>
     
     <!-- Product Details -->
+    <!-- Thông báo thêm vào giỏ hàng thành công -->
+    <div class="container mt-3" id="cartNotification" style="display: none;">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong><i class="bi bi-check-circle-fill me-2"></i> Đã thêm vào giỏ hàng!</strong> Sản phẩm đã được thêm vào <a href="basket.html" class="alert-link">giỏ hàng</a> của bạn.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+
     <div class="container my-5">
         <div class="row">
             <!-- Breadcrumb -->
@@ -290,6 +298,9 @@
     <!-- Custom JS -->
     <script src="js/client.js"></script>
     <script>
+        // Khai báo biến productId ở phạm vi toàn cục của trang
+        var productId;
+        
         $(document).ready(function() {
             // Load components
             $("#navbar").load("navbar-modern.html");
@@ -297,7 +308,7 @@
             
             // Get product ID from URL
             let params = (new URL(document.location)).searchParams;
-            let productId = params.get("id");
+            productId = params.get("id");
             
             if (productId) {
                 // Fetch product details
@@ -322,7 +333,7 @@
             
             // Add to cart button
             $("#addToCart").click(function() {
-                addToCart(productId);
+                addToCartFromDetail();
             });
         });
         
@@ -389,7 +400,8 @@
             });
         }
         
-        function addToCart(productId) {
+        // Chức năng thêm vào giỏ hàng cho trang chi tiết sản phẩm
+        function addToCartFromDetail() {
             let quantity = parseInt($("#productQuantity").val());
             
             // Prepare data for cart API
@@ -405,28 +417,23 @@
                 data: JSON.stringify(cartItem),
                 contentType: 'application/json',
                 success: function(data) {
-                    // Get product details to show in modal
-                    $.getJSON('/catalogue/' + productId, {}, function(product) {
-                        if (product) {
-                            $("#modalProductImage").attr("src", product.imageUrl[0]);
-                            $("#modalProductName").text(product.name);
-                            $("#modalProductQuantity").text("Quantity: " + quantity);
-                            $("#modalProductPrice").text("$" + product.price);
-                            
-                            // Show modal
-                            new bootstrap.Modal(document.getElementById('addedToCartModal')).show();
-                            
-                            // Update cart count
-                            $.get('/api/cart', {})
-                            .done(function(data) {
-                                $('#numItemsInCart').text(data.length);
-                                console.log('Cart data loaded successfully:', data);
-                            })
-                            .fail(function(jqXHR, textStatus, errorThrown) {
-                                console.error('Error loading cart data:', textStatus, errorThrown);
-                                $('#numItemsInCart').text('0');
-                            });
-                        }
+                    // Hiển thị thông báo đơn giản
+                    $("#cartNotification").fadeIn();
+                    
+                    // Tự động ẩn thông báo sau 5 giây
+                    setTimeout(function() {
+                        $("#cartNotification").fadeOut();
+                    }, 5000);
+                    
+                    // Update cart count
+                    $.get('/api/cart', {})
+                    .done(function(data) {
+                        $('#numItemsInCart').text(data.length);
+                        console.log('Cart data loaded successfully:', data);
+                    })
+                    .fail(function(jqXHR, textStatus, errorThrown) {
+                        console.error('Error loading cart data:', textStatus, errorThrown);
+                        $('#numItemsInCart').text('0');
                     });
                 },
                 error: function(xhr) {
@@ -436,5 +443,32 @@
             });
         }
     </script>
+<!-- Modal thông báo thêm vào giỏ hàng thành công -->
+<div class="modal fade" id="addedToCartModal" tabindex="-1" aria-labelledby="addedToCartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="addedToCartModalLabel">Đã thêm vào giỏ hàng</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-center">
+                    <div class="me-3" style="width: 80px;">
+                        <img id="modalProductImage" src="" class="img-fluid" alt="Product Image">
+                    </div>
+                    <div>
+                        <h5 id="modalProductName">Product Name</h5>
+                        <p class="mb-0" id="modalProductQuantity">Quantity: 1</p>
+                        <p class="mb-0" id="modalProductPrice">$0.00</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tiếp tục mua sắm</button>
+                <a href="basket.html" class="btn btn-primary">Xem giỏ hàng</a>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -32,17 +32,17 @@
       registerUrl:   "http://localhost:8080/api/register"
     };
   } else {
-    // Trong môi trường sản xuất, sử dụng các endpoint microservice thực
+    // Trong môi trường sản xuất, sử dụng đường dẫn tương đối thay vì tên dịch vụ
     module.exports = {
-      catalogueUrl:  util.format("http://catalogue%s", domain),
-      tagsUrl:       util.format("http://catalogue%s/tags", domain),
-      cartsUrl:      util.format("http://carts%s/carts", domain),
-      ordersUrl:     util.format("http://orders%s", domain),
-      customersUrl:  util.format("http://user%s/customers", domain),
-      addressUrl:    util.format("http://user%s/addresses", domain),
-      cardsUrl:      util.format("http://user%s/cards", domain),
-      loginUrl:      util.format("http://user%s/login", domain),
-      registerUrl:   util.format("http://user%s/register", domain),
+      catalogueUrl:  "/api/catalogue",
+      tagsUrl:       "/api/catalogue/tags",
+      cartsUrl:      "/api/cart",
+      ordersUrl:     "/api/orders",
+      customersUrl:  "/api/customers",
+      addressUrl:    "/api/addresses",
+      cardsUrl:      "/api/cards",
+      loginUrl:      "/api/login",
+      registerUrl:   "/api/register",
     };
   }
 }());

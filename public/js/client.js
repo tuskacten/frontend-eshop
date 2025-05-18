@@ -44,7 +44,8 @@ function register() {
         url: "register",
         type: "POST",
         async: false,
-	data: postvals,
+	    data: postvals,
+	    contentType: "application/json",
         success: function (data, textStatus, jqXHR) {
             $("#registration-message").html('<div class="alert alert-success">Registration and login successful.</div>');
             console.log('posted: ' + textStatus);
@@ -136,12 +137,69 @@ function addToCart(id) {
         url: "cart",
         type: "POST",
         data: JSON.stringify({"id": id}),
+        contentType: "application/json",
         success: function (data, textStatus, jqXHR) {
             console.log('Item added: ' + id + ', ' + textStatus);
-            location.reload();
+            
+            // Cập nhật số lượng sản phẩm trong giỏ hàng
+            $.get('/api/cart', {})
+            .done(function(cartData) {
+                $('#numItemsInCart').text(cartData.length);
+                console.log('Cart data updated successfully:', cartData);
+                
+                // Hiển thị thông báo thành công
+                showAddToCartNotification(id);
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('Error updating cart data:', textStatus, errorThrown);
+                // Vẫn hiển thị thông báo thành công
+                showAddToCartNotification(id);
+            });
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.error('Could not add item: ' + id + ', due to: ' + textStatus + ' | ' + errorThrown);
+            alert('Could not add item to cart: ' + (jqXHR.responseJSON ? jqXHR.responseJSON.message : errorThrown));
+        }
+    });
+}
+
+// Hàm hiển thị thông báo thêm vào giỏ hàng thành công
+function showAddToCartNotification(productId) {
+    // Lấy thông tin sản phẩm để hiển thị trong thông báo
+    $.getJSON('/catalogue/' + productId, {}, function(product) {
+        if (product) {
+            // Tạo thông báo toast
+            var toast = $('<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">' +
+                '<div class="toast-header bg-success text-white">' +
+                '<strong class="me-auto">Đã thêm vào giỏ hàng</strong>' +
+                '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>' +
+                '</div>' +
+                '<div class="toast-body">' +
+                '<div class="d-flex align-items-center">' +
+                '<img src="' + product.imageUrl[0] + '" class="me-2" style="width: 50px; height: 50px; object-fit: cover;">' +
+                '<div>' +
+                '<strong>' + product.name + '</strong><br>' +
+                '$' + product.price +
+                '</div>' +
+                '</div>' +
+                '<div class="mt-2 pt-2 border-top">' +
+                '<a href="basket.html" class="btn btn-primary btn-sm">Xem giỏ hàng</a>' +
+                '</div>' +
+                '</div>' +
+                '</div>');
+
+            // Thêm toast vào container (tạo nếu chưa có)
+            var toastContainer = $('#toast-container');
+            if (toastContainer.length === 0) {
+                toastContainer = $('<div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3"></div>');
+                $('body').append(toastContainer);
+            }
+            
+            toastContainer.append(toast);
+            
+            // Hiển thị toast
+            var bsToast = new bootstrap.Toast(toast[0]);
+            bsToast.show();
         }
     });
 }
