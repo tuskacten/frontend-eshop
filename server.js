@@ -79,6 +79,26 @@ app.get('/customer-orders.html', function(req, res) {
     res.sendFile(path.join(__dirname, 'public', 'customer-orders-modern.html'));
 });
 
+// Modern wishlist page
+app.get('/customer-wishlist-modern.html', function(req, res) {
+    res.sendFile(path.join(__dirname, 'public', 'customer-wishlist-modern.html'));
+});
+
+// Redirect old wishlist page to modern version
+app.get('/customer-wishlist.html', function(req, res) {
+    res.redirect('/customer-wishlist-modern.html');
+});
+
+// Modern account page
+app.get('/customer-account-modern.html', function(req, res) {
+    res.sendFile(path.join(__dirname, 'public', 'customer-account-modern.html'));
+});
+
+// Redirect old account page to modern version
+app.get('/customer-account.html', function(req, res) {
+    res.redirect('/customer-account-modern.html');
+});
+
 // Legacy UI routing - original UI accessible at /legacy
 app.get('/legacy', function(req, res) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -357,6 +377,76 @@ app.post('/register', function(req, res) {
         maxAge: 3600000
     });
     res.status(200).json({id: userId});
+});
+
+// Mock API endpoint cho wishlist
+let mockWishlist = [];
+
+app.get('/api/wishlist', function(req, res) {
+    // Nếu wishlist trống, trả về một số sản phẩm mẫu
+    if (mockWishlist.length === 0) {
+        // Trả về danh sách trống
+        return res.json([]);
+    }
+    
+    // Tìm thông tin chi tiết của sản phẩm trong wishlist
+    const wishlistItems = mockWishlist.map(itemId => {
+        const product = mockProducts.find(p => p.id === itemId);
+        return product || null;
+    }).filter(item => item !== null);
+    
+    res.json(wishlistItems);
+});
+
+app.post('/api/wishlist', function(req, res) {
+    const item = req.body;
+    let productId;
+    
+    if (item.id) {
+        productId = String(item.id);
+    } else {
+        return res.status(400).json({
+            message: "Invalid request format. Expected {id: productId}"
+        });
+    }
+    
+    // Kiểm tra xem sản phẩm có tồn tại không
+    const product = mockProducts.find(p => String(p.id) === productId);
+    if (!product) {
+        return res.status(404).json({
+            message: "Product not found with ID: " + productId
+        });
+    }
+    
+    // Kiểm tra xem sản phẩm đã có trong wishlist chưa
+    if (!mockWishlist.includes(productId)) {
+        mockWishlist.push(productId);
+    }
+    
+    res.status(201).json({
+        message: "Item added to wishlist",
+        wishlist: mockWishlist
+    });
+});
+
+app.delete('/api/wishlist/:id', function(req, res) {
+    const productId = req.params.id;
+    
+    // Tìm vị trí của sản phẩm trong wishlist
+    const index = mockWishlist.indexOf(productId);
+    
+    if (index !== -1) {
+        // Xóa sản phẩm khỏi wishlist
+        mockWishlist.splice(index, 1);
+        res.status(200).json({
+            message: "Item removed from wishlist",
+            wishlist: mockWishlist
+        });
+    } else {
+        res.status(404).json({
+            message: "Item not found in wishlist"
+        });
+    }
 });
 
 // Mock API endpoint cho đơn hàng
