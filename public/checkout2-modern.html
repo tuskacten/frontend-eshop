@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="all,follow">
+    <meta name="googlebot" content="index,follow,snippet,archive">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="WeaveSocks - Modern Microservices Demo Shop">
+    <meta name="author" content="WeaveSocks">
+    
+    <title>WeaveSocks - Checkout - Delivery Method</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.png">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Animation CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="css/modern-style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar will be loaded here -->
+    <div id="navbar"></div>
+    
+    <!-- Page Header -->
+    <section class="bg-primary text-white py-5 mb-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="display-4 fw-bold">Checkout</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/" class="text-white">Home</a></li>
+                            <li class="breadcrumb-item"><a href="basket.html" class="text-white">Shopping Cart</a></li>
+                            <li class="breadcrumb-item active text-white-50">Delivery Method</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-6 d-none d-md-block text-end">
+                    <i class="bi bi-truck display-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Checkout Steps -->
+    <div class="container mb-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="bs-stepper">
+                    <div class="bs-stepper-header" role="tablist">
+                        <div class="step completed" data-target="#account-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="account-part" id="account-part-trigger" aria-selected="false">
+                                <span class="bs-stepper-circle"><i class="bi bi-check"></i></span>
+                                <span class="bs-stepper-label">Address</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step active" data-target="#shipping-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="shipping-part" id="shipping-part-trigger" aria-selected="true">
+                                <span class="bs-stepper-circle">2</span>
+                                <span class="bs-stepper-label">Delivery</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#payment-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="payment-part" id="payment-part-trigger" aria-selected="false">
+                                <span class="bs-stepper-circle">3</span>
+                                <span class="bs-stepper-label">Payment</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#confirm-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="confirm-part" id="confirm-part-trigger" aria-selected="false">
+                                <span class="bs-stepper-circle">4</span>
+                                <span class="bs-stepper-label">Confirm</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Checkout Content -->
+    <div class="container mb-5">
+        <div class="row">
+            <!-- Delivery Options -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Choose Delivery Method</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="delivery-form">
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6>Delivery Address</h6>
+                                    <a href="checkout1.html" class="text-primary small">Change</a>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p class="mb-0" id="deliveryAddressSummary">
+                                            Loading address...
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h6 class="mb-3">Delivery Options</h6>
+                                
+                                <div class="form-check delivery-option mb-3">
+                                    <input class="form-check-input" type="radio" name="deliveryOption" id="standardDelivery" value="standard" checked>
+                                    <label class="form-check-label w-100" for="standardDelivery">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <span class="d-block fw-bold">Standard Delivery</span>
+                                                <span class="text-muted">3-5 business days</span>
+                                            </div>
+                                            <span class="delivery-price" id="standardDeliveryPrice">$4.99</span>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check delivery-option mb-3">
+                                    <input class="form-check-input" type="radio" name="deliveryOption" id="expressDelivery" value="express">
+                                    <label class="form-check-label w-100" for="expressDelivery">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <span class="d-block fw-bold">Express Delivery</span>
+                                                <span class="text-muted">1-2 business days</span>
+                                            </div>
+                                            <span class="delivery-price">$9.99</span>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check delivery-option">
+                                    <input class="form-check-input" type="radio" name="deliveryOption" id="nextDayDelivery" value="nextDay">
+                                    <label class="form-check-label w-100" for="nextDayDelivery">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <span class="d-block fw-bold">Next Day Delivery</span>
+                                                <span class="text-muted">Order before 2 PM for delivery tomorrow</span>
+                                            </div>
+                                            <span class="delivery-price">$14.99</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h6 class="mb-3">Delivery Notes (Optional)</h6>
+                                <textarea class="form-control" id="deliveryNotes" rows="3" placeholder="Add any special instructions for delivery..."></textarea>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <a href="checkout1.html" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to Address
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    Continue to Payment<i class="bi bi-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="basket-overview">
+                            <!-- Cart items will be loaded here -->
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal</span>
+                            <span id="orderSubtotal">$0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping</span>
+                            <span id="orderShipping">$4.99</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Tax</span>
+                            <span id="orderTax">$0.00</span>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="fw-bold">Total</span>
+                            <span class="fw-bold text-primary fs-5" id="orderTotal">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer will be loaded here -->
+    <div id="footer"></div>
+    
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Cookie JS -->
+    <script src="js/js.cookie.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/client.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Load components
+            $("#navbar").load("navbar-modern.html");
+            $("#footer").load("footer-modern.html");
+            
+            // Load cart items and summary
+            loadCartSummary();
+            
+            // Load address from session storage
+            displayAddressSummary();
+            
+            // Form submission
+            $("#delivery-form").submit(function(e) {
+                e.preventDefault();
+                
+                // Save delivery method to session storage
+                saveDeliveryToSession();
+                
+                // Redirect to next step
+                window.location.href = "checkout3.html";
+            });
+            
+            // Update shipping cost when delivery option changes
+            $('input[name="deliveryOption"]').change(function() {
+                updateShippingCost($(this).val());
+            });
+        });
+        
+        function loadCartSummary() {
+            $.getJSON('/cart', {}, function(data) {
+                // Clear the overview
+                $("#basket-overview").empty();
+                
+                let subtotal = 0;
+                
+                if (data && data.length > 0) {
+                    // Add each item to the overview
+                    $.each(data, function(index, cartItem) {
+                        $.getJSON('/catalogue/' + cartItem.itemId, {}, function(item) {
+                            if (item) {
+                                const totalPrice = cartItem.quantity * item.price;
+                                subtotal += totalPrice;
+                                
+                                // Add item to overview
+                                $("#basket-overview").append(`
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <img src="${item.imageUrl[0]}" alt="${item.name}" class="img-fluid rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                            <div class="ms-3">
+                                                <h6 class="mb-0">${item.name}</h6>
+                                                <small class="text-muted">Qty: ${cartItem.quantity}</small>
+                                            </div>
+                                        </div>
+                                        <span>$${totalPrice.toFixed(2)}</span>
+                                    </div>
+                                `);
+                                
+                                // Update totals
+                                updateOrderTotals(subtotal, getSelectedShippingCost());
+                            }
+                        });
+                    });
+                } else {
+                    // If cart is empty, redirect to cart page
+                    window.location.href = "basket.html";
+                }
+            });
+        }
+        
+        function updateOrderTotals(subtotal, shipping) {
+            const tax = subtotal * 0.2; // 20% tax rate
+            const total = subtotal + shipping + tax;
+            
+            $("#orderSubtotal").text('$' + subtotal.toFixed(2));
+            $("#orderShipping").text(shipping === 0 ? 'FREE' : '$' + shipping.toFixed(2));
+            $("#orderTax").text('$' + tax.toFixed(2));
+            $("#orderTotal").text('$' + total.toFixed(2));
+            
+            // Save order totals to session storage for later use
+            sessionStorage.setItem('orderTotals', JSON.stringify({
+                subtotal: subtotal,
+                shipping: shipping,
+                tax: tax,
+                total: total
+            }));
+        }
+        
+        function displayAddressSummary() {
+            const savedAddress = sessionStorage.getItem('shippingAddress');
+            
+            if (savedAddress) {
+                const addressData = JSON.parse(savedAddress);
+                
+                $("#deliveryAddressSummary").html(`
+                    ${addressData.firstName} ${addressData.lastName}<br>
+                    ${addressData.address}<br>
+                    ${addressData.city}, ${addressData.postcode}<br>
+                    ${addressData.country}<br>
+                    ${addressData.phone}
+                `);
+            } else {
+                // If no address data, redirect back to address step
+                window.location.href = "checkout1.html";
+            }
+        }
+        
+        function saveDeliveryToSession() {
+            const selectedOption = $('input[name="deliveryOption"]:checked').val();
+            const deliveryNotes = $("#deliveryNotes").val();
+            
+            const deliveryData = {
+                method: selectedOption,
+                notes: deliveryNotes,
+                cost: getSelectedShippingCost()
+            };
+            
+            sessionStorage.setItem('deliveryMethod', JSON.stringify(deliveryData));
+        }
+        
+        function updateShippingCost(deliveryOption) {
+            let shippingCost = 4.99; // Default to standard
+            
+            if (deliveryOption === 'express') {
+                shippingCost = 9.99;
+            } else if (deliveryOption === 'nextDay') {
+                shippingCost = 14.99;
+            }
+            
+            // Get the current subtotal
+            const orderTotals = JSON.parse(sessionStorage.getItem('orderTotals') || '{}');
+            const subtotal = orderTotals.subtotal || 0;
+            
+            // Update the display and totals
+            updateOrderTotals(subtotal, shippingCost);
+        }
+        
+        function getSelectedShippingCost() {
+            const deliveryOption = $('input[name="deliveryOption"]:checked').val();
+            
+            if (deliveryOption === 'express') {
+                return 9.99;
+            } else if (deliveryOption === 'nextDay') {
+                return 14.99;
+            } else {
+                return 4.99; // Standard shipping
+            }
+        }
+    </script>
+    
+    <style>
+        /* Stepper styles */
+        .bs-stepper {
+            margin-bottom: 2rem;
+        }
+        
+        .bs-stepper-header {
+            display: flex;
+            align-items: center;
+        }
+        
+        .step {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .step-trigger {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            min-width: 100px;
+            color: #6c757d;
+        }
+        
+        .bs-stepper-circle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            margin-bottom: 0.5rem;
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 50%;
+            color: #6c757d;
+            font-weight: bold;
+        }
+        
+        .active .bs-stepper-circle {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        .completed .bs-stepper-circle {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+        
+        .active .bs-stepper-label, .completed .bs-stepper-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .line {
+            flex: 1;
+            height: 2px;
+            background-color: #dee2e6;
+        }
+        
+        .active + .line, .completed + .line {
+            background-color: var(--primary-color);
+        }
+        
+        /* Delivery option styles */
+        .delivery-option label {
+            cursor: pointer;
+            padding: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+        }
+        
+        .delivery-option input:checked + label {
+            border-color: var(--primary-color);
+            background-color: rgba(93, 79, 221, 0.05);
+        }
+        
+        .delivery-price {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="all,follow">
+    <meta name="googlebot" content="index,follow,snippet,archive">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="WeaveSocks - Modern Microservices Demo Shop">
+    <meta name="author" content="WeaveSocks">
+    
+    <title>WeaveSocks - Product Details</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.png">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Animation CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="css/modern-style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar will be loaded here -->
+    <div id="navbar"></div>
+    
+    <!-- Product Details -->
+    <div class="container my-5">
+        <div class="row">
+            <!-- Breadcrumb -->
+            <div class="col-12 mb-4">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="category.html?category=all">Products</a></li>
+                        <li class="breadcrumb-item active" id="breadcrumbProductName">Product</li>
+                    </ol>
+                </nav>
+            </div>
+            
+            <!-- Product Images -->
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner" id="productImages">
+                                <!-- Images will be loaded here -->
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Thumbnail Navigation -->
+                <div class="row mt-3 g-2" id="productThumbnails">
+                    <!-- Thumbnails will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Product Info -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h1 class="card-title h2 mb-4" id="productName">Product Name</h1>
+                        
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="me-2">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-half text-warning"></i>
+                                </div>
+                                <span class="text-muted">(24 reviews)</span>
+                            </div>
+                            
+                            <h2 class="product-price h3 mb-0" id="productPrice">$0.00</h2>
+                            <p class="text-success mt-1 mb-4">In stock</p>
+                            
+                            <p class="card-text" id="productDescription">Product description loading...</p>
+                        </div>
+                        
+                        <!-- Size Selection -->
+                        <div class="mb-4">
+                            <h5>Size</h5>
+                            <div class="btn-group" role="group" aria-label="Size selection">
+                                <input type="radio" class="btn-check" name="btnradio" id="btnSize1" autocomplete="off" checked>
+                                <label class="btn btn-outline-primary" for="btnSize1">S</label>
+                                
+                                <input type="radio" class="btn-check" name="btnradio" id="btnSize2" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="btnSize2">M</label>
+                                
+                                <input type="radio" class="btn-check" name="btnradio" id="btnSize3" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="btnSize3">L</label>
+                                
+                                <input type="radio" class="btn-check" name="btnradio" id="btnSize4" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="btnSize4">XL</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Quantity -->
+                        <div class="mb-4">
+                            <h5>Quantity</h5>
+                            <div class="input-group" style="width: 140px;">
+                                <button class="btn btn-outline-secondary" type="button" id="decreaseQuantity">-</button>
+                                <input type="text" class="form-control text-center" value="1" id="productQuantity">
+                                <button class="btn btn-outline-secondary" type="button" id="increaseQuantity">+</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary btn-lg" id="addToCart">
+                                <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                            </button>
+                            <button class="btn btn-outline-primary">
+                                <i class="bi bi-heart me-2"></i>Add to Wishlist
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Product Details Tabs -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true">Details</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab" aria-controls="shipping" aria-selected="false">Shipping</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Reviews</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content py-4" id="productTabsContent">
+                            <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
+                                <h5>Product Specifications</h5>
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row" style="width: 30%;">Material</th>
+                                            <td>Cotton, Polyester, Elastane</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Care Instructions</th>
+                                            <td>Machine wash at 30°C, Do not tumble dry</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Country of Origin</th>
+                                            <td>Italy</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Item Code</th>
+                                            <td id="productId">Loading...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
+                                <h5>Shipping Information</h5>
+                                <p>We offer free standard shipping on all orders over $50. For orders under $50, standard shipping costs $5.99.</p>
+                                <p>Delivery Times:</p>
+                                <ul>
+                                    <li>Standard Shipping: 3-5 business days</li>
+                                    <li>Express Shipping: 1-2 business days ($9.99)</li>
+                                </ul>
+                                <p>International shipping is available for selected countries. Shipping costs and delivery times vary by location.</p>
+                            </div>
+                            <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                                <h5>Customer Reviews</h5>
+                                <div class="mb-4">
+                                    <div class="d-flex mb-3">
+                                        <div class="me-3">
+                                            <img src="https://via.placeholder.com/50" class="rounded-circle" alt="User">
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Jane Smith</h6>
+                                            <div class="mb-2">
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star text-warning"></i>
+                                            </div>
+                                            <p class="mb-1">These socks are incredibly comfortable and durable. I've washed them multiple times and they still look great.</p>
+                                            <small class="text-muted">Posted 2 weeks ago</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex">
+                                        <div class="me-3">
+                                            <img src="https://via.placeholder.com/50" class="rounded-circle" alt="User">
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">John Doe</h6>
+                                            <div class="mb-2">
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                            </div>
+                                            <p class="mb-1">Perfect fit and very stylish. I'll definitely buy more in different colors.</p>
+                                            <small class="text-muted">Posted 1 month ago</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button class="btn btn-primary">Write a Review</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Products -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4">You Might Also Like</h3>
+                <div class="row g-4" id="relatedProducts">
+                    <!-- Related products will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Added to Cart Modal -->
+    <div class="modal fade" id="addedToCartModal" tabindex="-1" aria-labelledby="addedToCartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="addedToCartModalLabel"><i class="bi bi-check-circle me-2"></i>Item Added to Cart</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex align-items-center">
+                        <img id="modalProductImage" src="" alt="Product" class="img-fluid me-3" style="max-width: 100px;">
+                        <div>
+                            <h5 id="modalProductName">Product Name</h5>
+                            <p class="mb-0" id="modalProductQuantity">Quantity: 1</p>
+                            <p class="product-price mb-0" id="modalProductPrice">$0.00</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Continue Shopping</button>
+                    <a href="basket.html" class="btn btn-primary">View Cart</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer will be loaded here -->
+    <div id="footer"></div>
+    
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Cookie JS -->
+    <script src="js/js.cookie.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/client.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Load components
+            $("#navbar").load("navbar-modern.html");
+            $("#footer").load("footer-modern.html");
+            
+            // Get product ID from URL
+            let params = (new URL(document.location)).searchParams;
+            let productId = params.get("id");
+            
+            if (productId) {
+                // Fetch product details
+                fetchProductDetails(productId);
+                
+                // Fetch related products
+                fetchRelatedProducts();
+            }
+            
+            // Quantity control
+            $("#decreaseQuantity").click(function() {
+                let quantity = parseInt($("#productQuantity").val());
+                if (quantity > 1) {
+                    $("#productQuantity").val(quantity - 1);
+                }
+            });
+            
+            $("#increaseQuantity").click(function() {
+                let quantity = parseInt($("#productQuantity").val());
+                $("#productQuantity").val(quantity + 1);
+            });
+            
+            // Add to cart button
+            $("#addToCart").click(function() {
+                addToCart(productId);
+            });
+        });
+        
+        function fetchProductDetails(productId) {
+            $.getJSON('/catalogue/' + productId, {}, function(data) {
+                if (data) {
+                    // Update product details
+                    $("#productName").text(data.name);
+                    $("#breadcrumbProductName").text(data.name);
+                    $("#productPrice").text('$' + data.price);
+                    $("#productDescription").text(data.description || 'No description available');
+                    $("#productId").text(data.id);
+                    
+                    // Update product images
+                    $("#productImages").empty();
+                    $("#productThumbnails").empty();
+                    
+                    if (data.imageUrl && data.imageUrl.length > 0) {
+                        $.each(data.imageUrl, function(index, imgUrl) {
+                            // Add to carousel
+                            $("#productImages").append(`
+                                <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                                    <img src="${imgUrl}" class="d-block w-100" alt="${data.name}">
+                                </div>
+                            `);
+                            
+                            // Add to thumbnails
+                            $("#productThumbnails").append(`
+                                <div class="col-3">
+                                    <img src="${imgUrl}" class="img-thumbnail" alt="${data.name}" 
+                                         onclick="$('#productCarousel').carousel(${index})">
+                                </div>
+                            `);
+                        });
+                    }
+                }
+            });
+        }
+        
+        function fetchRelatedProducts() {
+            $.getJSON('/catalogue?size=4', {}, function(data) {
+                $("#relatedProducts").empty();
+                
+                if (data && data.length > 0) {
+                    $.each(data, function(index, element) {
+                        $("#relatedProducts").append(`
+                            <div class="col-md-6 col-lg-3">
+                                <div class="card product-card h-100 border-0 shadow-sm">
+                                    <div class="card-img-container">
+                                        <img src="${element.imageUrl[0]}" alt="${element.name}" class="card-img-top">
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">${element.name}</h5>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <span class="product-price">$${element.price}</span>
+                                            <a href="detail.html?id=${element.id}" class="btn btn-primary btn-sm">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                    });
+                }
+            });
+        }
+        
+        function addToCart(productId) {
+            let quantity = parseInt($("#productQuantity").val());
+            
+            // Prepare data for cart API
+            let cartItem = {
+                id: productId,
+                quantity: quantity
+            };
+            
+            // Add to cart via API
+            $.ajax({
+                url: '/cart',
+                type: 'POST',
+                data: JSON.stringify(cartItem),
+                contentType: 'application/json',
+                success: function(data) {
+                    // Get product details to show in modal
+                    $.getJSON('/catalogue/' + productId, {}, function(product) {
+                        if (product) {
+                            $("#modalProductImage").attr("src", product.imageUrl[0]);
+                            $("#modalProductName").text(product.name);
+                            $("#modalProductQuantity").text("Quantity: " + quantity);
+                            $("#modalProductPrice").text("$" + product.price);
+                            
+                            // Show modal
+                            new bootstrap.Modal(document.getElementById('addedToCartModal')).show();
+                            
+                            // Update cart count
+                            $.get('/api/cart', {})
+                            .done(function(data) {
+                                $('#numItemsInCart').text(data.length);
+                                console.log('Cart data loaded successfully:', data);
+                            })
+                            .fail(function(jqXHR, textStatus, errorThrown) {
+                                console.error('Error loading cart data:', textStatus, errorThrown);
+                                $('#numItemsInCart').text('0');
+                            });
+                        }
+                    });
+                },
+                error: function(xhr) {
+                    console.log('Error adding to cart:', xhr);
+                    alert('Failed to add item to cart. Please try again.');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

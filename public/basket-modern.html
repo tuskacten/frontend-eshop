@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="all,follow">
+    <meta name="googlebot" content="index,follow,snippet,archive">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="WeaveSocks - Modern Microservices Demo Shop">
+    <meta name="author" content="WeaveSocks">
+    
+    <title>WeaveSocks - Your Shopping Cart</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.png">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Animation CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="css/modern-style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar will be loaded here -->
+    <div id="navbar"></div>
+    
+    <!-- Page Header -->
+    <section class="bg-primary text-white py-5 mb-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="display-4 fw-bold">Shopping Cart</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/" class="text-white">Home</a></li>
+                            <li class="breadcrumb-item active text-white-50">Shopping Cart</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-6 d-none d-md-block text-end">
+                    <i class="bi bi-cart-fill display-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Cart Content -->
+    <div class="container mb-5">
+        <div class="row" id="basket-wrapper">
+            <!-- If cart is empty -->
+            <div class="col-12 text-center py-5 d-none" id="emptyCart">
+                <img src="img/empty-cart.svg" alt="Empty Cart" class="img-fluid mb-4" style="max-width: 200px;">
+                <h2>Your cart is empty</h2>
+                <p class="text-muted mb-4">Looks like you haven't added anything to your cart yet.</p>
+                <a href="/" class="btn btn-primary">Continue Shopping</a>
+            </div>
+            
+            <!-- If cart has items -->
+            <div class="col-lg-8 mb-4 mb-lg-0" id="cartContent">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">Cart Items (<span id="itemCount">0</span>)</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-borderless align-middle mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="ps-4">Product</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                        <th class="pe-4"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cart-entries">
+                                    <!-- Cart items will be added here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white py-3 d-flex justify-content-between">
+                        <button id="clearCart" class="btn btn-outline-danger">
+                            <i class="bi bi-trash me-2"></i>Clear Cart
+                        </button>
+                        <a href="/" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left me-2"></i>Continue Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="col-lg-4" id="orderSummary">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Subtotal</span>
+                            <span id="cartSubtotal">$0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Shipping</span>
+                            <span id="cartShipping">$4.99</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-4">
+                            <span class="fw-bold">Total</span>
+                            <span class="fw-bold text-primary fs-5" id="cartTotal">$0.00</span>
+                        </div>
+                        <div class="d-grid">
+                            <a href="checkout1.html" class="btn btn-primary btn-lg" id="proceedToCheckout">
+                                <i class="bi bi-credit-card me-2"></i>Proceed to Checkout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Promo Code -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">Apply Promo Code</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Enter code" aria-label="Promo code">
+                            <button class="btn btn-outline-primary" type="button">Apply</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Product Recommendations -->
+    <div class="container mb-5">
+        <h3 class="mb-4">Recommended for You</h3>
+        <div class="row g-4" id="recommendedProducts">
+            <!-- Recommended products will be loaded here -->
+        </div>
+    </div>
+    
+    <!-- Footer will be loaded here -->
+    <div id="footer"></div>
+    
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Cookie JS -->
+    <script src="js/js.cookie.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/client.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Load components
+            $("#navbar").load("navbar-modern.html");
+            $("#footer").load("footer-modern.html");
+            
+            // Show cart
+            updateCart();
+            
+            // Clear cart button
+            $("#clearCart").click(function() {
+                if (confirm('Are you sure you want to clear your cart?')) {
+                    $.ajax({
+                        url: '/cart',
+                        type: 'DELETE',
+                        success: function() {
+                            updateCart();
+                        },
+                        error: function(err) {
+                            console.log('Error clearing cart', err);
+                        }
+                    });
+                }
+            });
+            
+            // Load recommended products
+            loadRecommendedProducts();
+        });
+        
+        function updateCart() {
+            $.getJSON('/cart', {}, function(data) {
+                // Update item count
+                const itemCount = data.length || 0;
+                $("#itemCount").text(itemCount);
+                
+                // Show empty cart message if cart is empty
+                if (itemCount === 0) {
+                    $("#emptyCart").removeClass("d-none");
+                    $("#cartContent, #orderSummary").addClass("d-none");
+                    return;
+                } else {
+                    $("#emptyCart").addClass("d-none");
+                    $("#cartContent, #orderSummary").removeClass("d-none");
+                }
+                
+                // Render cart items
+                $("#cart-entries").empty();
+                
+                let subtotal = 0;
+                
+                $.each(data, function(index, cartItem) {
+                    // Get details about the product
+                    $.getJSON('/catalogue/' + cartItem.itemId, {}, function(item) {
+                        if (item) {
+                            const totalPrice = cartItem.quantity * item.price;
+                            subtotal += totalPrice;
+                            
+                            // Render cart entry
+                            $("#cart-entries").append(`
+                                <tr data-id="${item.id}">
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <img src="${item.imageUrl[0]}" alt="${item.name}" class="img-fluid rounded" style="width: 70px;">
+                                            <div class="ms-3">
+                                                <h6 class="mb-1">${item.name}</h6>
+                                                <p class="text-muted small mb-0">Size: M</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>$${item.price.toFixed(2)}</td>
+                                    <td>
+                                        <div class="input-group input-group-sm" style="width: 120px;">
+                                            <button class="btn btn-outline-secondary decrease-qty" type="button" data-id="${item.id}">-</button>
+                                            <input type="text" class="form-control text-center item-qty" value="${cartItem.quantity}" data-id="${item.id}">
+                                            <button class="btn btn-outline-secondary increase-qty" type="button" data-id="${item.id}">+</button>
+                                        </div>
+                                    </td>
+                                    <td>$${totalPrice.toFixed(2)}</td>
+                                    <td class="pe-4">
+                                        <button class="btn btn-sm btn-outline-danger remove-item" data-id="${item.id}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `);
+                            
+                            // Update order summary
+                            updateOrderSummary(subtotal);
+                            
+                            // Add event listeners for quantity buttons
+                            setupQuantityControls();
+                        }
+                    });
+                });
+            });
+        }
+        
+        function updateOrderSummary(subtotal) {
+            // Fixed shipping cost
+            const shipping = subtotal > 50 ? 0 : 4.99;
+            const total = subtotal + shipping;
+            
+            // Update summary values
+            $("#cartSubtotal").text('$' + subtotal.toFixed(2));
+            $("#cartShipping").text(shipping === 0 ? 'FREE' : '$' + shipping.toFixed(2));
+            $("#cartTotal").text('$' + total.toFixed(2));
+        }
+        
+        function setupQuantityControls() {
+            // Decrease quantity
+            $(".decrease-qty").off('click').on('click', function() {
+                const productId = $(this).data('id');
+                const qtyInput = $(`.item-qty[data-id="${productId}"]`);
+                let qty = parseInt(qtyInput.val());
+                
+                if (qty > 1) {
+                    qty--;
+                    qtyInput.val(qty);
+                    updateItemQuantity(productId, qty);
+                }
+            });
+            
+            // Increase quantity
+            $(".increase-qty").off('click').on('click', function() {
+                const productId = $(this).data('id');
+                const qtyInput = $(`.item-qty[data-id="${productId}"]`);
+                let qty = parseInt(qtyInput.val());
+                
+                qty++;
+                qtyInput.val(qty);
+                updateItemQuantity(productId, qty);
+            });
+            
+            // Manual quantity input
+            $(".item-qty").off('change').on('change', function() {
+                const productId = $(this).data('id');
+                let qty = parseInt($(this).val());
+                
+                if (isNaN(qty) || qty < 1) {
+                    qty = 1;
+                    $(this).val(qty);
+                }
+                
+                updateItemQuantity(productId, qty);
+            });
+            
+            // Remove item button
+            $(".remove-item").off('click').on('click', function() {
+                const productId = $(this).data('id');
+                removeItem(productId);
+            });
+        }
+        
+        function updateItemQuantity(productId, quantity) {
+            const cartItem = {
+                id: productId,
+                quantity: quantity
+            };
+            
+            $.ajax({
+                url: '/cart',
+                type: 'POST',
+                data: JSON.stringify(cartItem),
+                contentType: 'application/json',
+                success: function() {
+                    updateCart();
+                },
+                error: function(err) {
+                    console.log('Error updating cart', err);
+                }
+            });
+        }
+        
+        function removeItem(productId) {
+            $.ajax({
+                url: '/cart/' + productId,
+                type: 'DELETE',
+                success: function() {
+                    updateCart();
+                },
+                error: function(err) {
+                    console.log('Error removing item', err);
+                }
+            });
+        }
+        
+        function loadRecommendedProducts() {
+            $.getJSON('/catalogue?size=4', {}, function(data) {
+                $("#recommendedProducts").empty();
+                
+                if (data && data.length > 0) {
+                    $.each(data, function(index, product) {
+                        $("#recommendedProducts").append(`
+                            <div class="col-md-6 col-lg-3">
+                                <div class="card product-card h-100 border-0 shadow-sm">
+                                    <div class="card-img-container">
+                                        <img src="${product.imageUrl[0]}" alt="${product.name}" class="card-img-top">
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">${product.name}</h5>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <span class="product-price">$${product.price.toFixed(2)}</span>
+                                            <a href="detail.html?id=${product.id}" class="btn btn-primary btn-sm">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

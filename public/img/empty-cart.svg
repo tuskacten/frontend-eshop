@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="200px" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g transform="translate(20.000000, 20.000000)">
+      <!-- Shopping Cart -->
+      <path d="M25,50 L160,50 L140,120 L40,120 L25,50 Z" fill="#f0f0f0" stroke="#5D4FDD" stroke-width="3"></path>
+      <path d="M60,60 L60,110" stroke="#5D4FDD" stroke-width="2" stroke-dasharray="5,5"></path>
+      <path d="M100,60 L100,110" stroke="#5D4FDD" stroke-width="2" stroke-dasharray="5,5"></path>
+      <path d="M50,40 L25,50" stroke="#5D4FDD" stroke-width="3" stroke-linecap="round"></path>
+      
+      <!-- Wheels -->
+      <circle cx="60" cy="140" r="10" fill="white" stroke="#5D4FDD" stroke-width="3"></circle>
+      <circle cx="120" cy="140" r="10" fill="white" stroke="#5D4FDD" stroke-width="3"></circle>
+      
+      <!-- Handle -->
+      <path d="M140,120 L150,140 C150,140 160,145 170,140 C180,135 175,125 170,125 L160,120" stroke="#5D4FDD" stroke-width="3" fill="white"></path>
+      
+      <!-- Empty icon -->
+      <circle cx="90" cy="85" r="30" fill="white" stroke="#5D4FDD" stroke-width="2"></circle>
+      <path d="M75,85 L105,85" stroke="#FB6340" stroke-width="3" stroke-linecap="round"></path>
+      <path d="M80,75 L100,95" stroke="#FB6340" stroke-width="3" stroke-linecap="round"></path>
+      <path d="M100,75 L80,95" stroke="#FB6340" stroke-width="3" stroke-linecap="round"></path>
+    </g>
+  </g>
+</svg>

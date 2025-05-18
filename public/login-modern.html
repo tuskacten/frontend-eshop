@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="all,follow">
+    <meta name="googlebot" content="index,follow,snippet,archive">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="WeaveSocks - Modern Microservices Demo Shop">
+    <meta name="author" content="WeaveSocks">
+    
+    <title>WeaveSocks - Login</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.png">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Animation CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="css/modern-style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar will be loaded here -->
+    <div id="navbar"></div>
+    
+    <!-- Login Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-5">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4 p-lg-5">
+                            <div class="text-center mb-4">
+                                <h1 class="h3 mb-3 fw-bold">Welcome Back</h1>
+                                <p class="text-muted">Sign in to your WeaveSocks account</p>
+                            </div>
+                            
+                            <!-- Alert for errors -->
+                            <div class="alert alert-danger d-none" id="login-message"></div>
+                            
+                            <!-- Login Form -->
+                            <form id="login">
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Username</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                        <input type="text" class="form-control" id="username" name="username" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <label for="password" class="form-label">Password</label>
+                                        <a href="#" class="small text-primary">Forgot password?</a>
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                        <input type="password" class="form-control" id="password" name="password" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">Remember me</label>
+                                </div>
+                                
+                                <div class="d-grid mb-4">
+                                    <button type="submit" class="btn btn-primary btn-lg">Sign In</button>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <p class="mb-0">Don't have an account? <a href="register.html" class="text-primary">Create one</a></p>
+                                </div>
+                            </form>
+                            
+                            <!-- Social Login -->
+                            <div class="mt-4">
+                                <div class="text-center mb-3">
+                                    <span class="divider-text">or sign in with</span>
+                                </div>
+                                <div class="d-grid gap-2 mb-3">
+                                    <button id="googleLoginBtn" class="btn btn-outline-danger">
+                                        <i class="bi bi-google me-2"></i>Google
+                                    </button>
+                                </div>
+                                <div class="d-grid">
+                                    <button id="facebookLoginBtn" class="btn btn-outline-primary">
+                                        <i class="bi bi-facebook me-2"></i>Facebook
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer will be loaded here -->
+    <div id="footer"></div>
+    
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Cookie JS -->
+    <script src="js/js.cookie.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/client.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Load components
+            $("#navbar").load("navbar-modern.html");
+            $("#footer").load("footer-modern.html");
+            
+            // Login form submission
+            $("#login").submit(function(e) {
+                e.preventDefault();
+                
+                let username = $("#username").val();
+                let password = $("#password").val();
+                
+                $.ajax({
+                    url: "/login",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        username: username,
+                        password: password
+                    }),
+                    success: function(data, textStatus, jqXHR) {
+                        $.cookie('logged_in', username, { path: '/' });
+                        
+                        if (getCookie("basket") != null) {
+                            // If basket cookie exists, redirect to the basket
+                            window.location.href = "/basket.html";
+                        } else {
+                            // Otherwise, redirect to the home page
+                            window.location.href = "/";
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        $("#login-message").removeClass("d-none").text("Invalid login credentials. Please try again.");
+                    }
+                });
+            });
+            
+            // Google Sign In
+            $("#googleLoginBtn").click(function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                const originalText = $(this).html();
+                $(this).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...');
+                $(this).prop('disabled', true);
+                
+                // Simulate Google authentication (since we can't actually connect to Google OAuth)
+                setTimeout(function() {
+                    // Set a cookie to simulate logged in state
+                    $.cookie('logged_in', 'google_user@example.com', { path: '/' });
+                    
+                    // Show success message before redirect
+                    $("#login-message").removeClass("d-none alert-danger").addClass("alert-success").text("Successfully logged in with Google!");
+                    
+                    // Redirect after a brief delay
+                    setTimeout(function() {
+                        window.location.href = "/";
+                    }, 1000);
+                }, 1500);
+            });
+            
+            // Facebook Sign In
+            $("#facebookLoginBtn").click(function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                const originalText = $(this).html();
+                $(this).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...');
+                $(this).prop('disabled', true);
+                
+                // Simulate Facebook authentication
+                setTimeout(function() {
+                    // Set a cookie to simulate logged in state
+                    $.cookie('logged_in', 'facebook_user@example.com', { path: '/' });
+                    
+                    // Show success message before redirect
+                    $("#login-message").removeClass("d-none alert-danger").addClass("alert-success").text("Successfully logged in with Facebook!");
+                    
+                    // Redirect after a brief delay
+                    setTimeout(function() {
+                        window.location.href = "/";
+                    }, 1000);
+                }, 1500);
+            });
+            
+            // Check if user is already logged in
+            if ($.cookie('logged_in') != null && $.cookie('logged_in') != "") {
+                window.location.href = "/";
+            }
+        });
+        
+        // Helper function to get cookie
+        function getCookie(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+            if (parts.length == 2) return parts.pop().split(";").shift();
+        }
+    </script>
+    
+    <style>
+        .divider-text {
+            position: relative;
+            display: inline-block;
+            padding: 0 10px;
+            color: #6c757d;
+        }
+        
+        .divider-text::before,
+        .divider-text::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 80px;
+            height: 1px;
+            background-color: #dee2e6;
+        }
+        
+        .divider-text::before {
+            right: 100%;
+        }
+        
+        .divider-text::after {
+            left: 100%;
+        }
+    </style>
+</body>
+</html>

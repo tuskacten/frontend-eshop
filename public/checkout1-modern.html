@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="all,follow">
+    <meta name="googlebot" content="index,follow,snippet,archive">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="WeaveSocks - Modern Microservices Demo Shop">
+    <meta name="author" content="WeaveSocks">
+    
+    <title>WeaveSocks - Checkout</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.png">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Animation CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="css/modern-style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar will be loaded here -->
+    <div id="navbar"></div>
+    
+    <!-- Page Header -->
+    <section class="bg-primary text-white py-5 mb-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="display-4 fw-bold">Checkout</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/" class="text-white">Home</a></li>
+                            <li class="breadcrumb-item"><a href="basket.html" class="text-white">Shopping Cart</a></li>
+                            <li class="breadcrumb-item active text-white-50">Checkout</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-6 d-none d-md-block text-end">
+                    <i class="bi bi-credit-card display-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Checkout Steps -->
+    <div class="container mb-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="bs-stepper">
+                    <div class="bs-stepper-header" role="tablist">
+                        <div class="step active" data-target="#account-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="account-part" id="account-part-trigger" aria-selected="true">
+                                <span class="bs-stepper-circle">1</span>
+                                <span class="bs-stepper-label">Address</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#shipping-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="shipping-part" id="shipping-part-trigger" aria-selected="false">
+                                <span class="bs-stepper-circle">2</span>
+                                <span class="bs-stepper-label">Delivery</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#payment-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="payment-part" id="payment-part-trigger" aria-selected="false">
+                                <span class="bs-stepper-circle">3</span>
+                                <span class="bs-stepper-label">Payment</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#confirm-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="confirm-part" id="confirm-part-trigger" aria-selected="false">
+                                <span class="bs-stepper-circle">4</span>
+                                <span class="bs-stepper-label">Confirm</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Checkout Content -->
+    <div class="container mb-5">
+        <div class="row">
+            <!-- Address Form -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Shipping Address</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="address-form">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="firstName" class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="firstName" name="firstName" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="lastName" class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName" name="lastName" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="address" name="address" required>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-5 mb-3">
+                                    <label for="country" class="form-label">Country</label>
+                                    <select class="form-select" id="country" name="country" required>
+                                        <option value="">Choose...</option>
+                                        <option value="United Kingdom">United Kingdom</option>
+                                        <option value="United States">United States</option>
+                                        <option value="Canada">Canada</option>
+                                        <option value="Australia">Australia</option>
+                                        <option value="Germany">Germany</option>
+                                        <option value="France">France</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="city" class="form-label">City</label>
+                                    <input type="text" class="form-control" id="city" name="city" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="postcode" class="form-label">Postcode</label>
+                                    <input type="text" class="form-control" id="postcode" name="postcode" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" required>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="saveAddress">
+                                <label class="form-check-label" for="saveAddress">
+                                    Save this address for future orders
+                                </label>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <a href="basket.html" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to Cart
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    Continue to Delivery<i class="bi bi-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="basket-overview">
+                            <!-- Cart items will be loaded here -->
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal</span>
+                            <span id="orderSubtotal">$0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping</span>
+                            <span id="orderShipping">$4.99</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Tax</span>
+                            <span id="orderTax">$0.00</span>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="fw-bold">Total</span>
+                            <span class="fw-bold text-primary fs-5" id="orderTotal">$0.00</span>
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="termsAndConditions" required>
+                            <label class="form-check-label" for="termsAndConditions">
+                                I agree to the <a href="#">Terms and Conditions</a>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer will be loaded here -->
+    <div id="footer"></div>
+    
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Cookie JS -->
+    <script src="js/js.cookie.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/client.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Load components
+            $("#navbar").load("navbar-modern.html");
+            $("#footer").load("footer-modern.html");
+            
+            // Load cart items and summary
+            loadCartSummary();
+            
+            // Form submission
+            $("#address-form").submit(function(e) {
+                e.preventDefault();
+                
+                // Save form data to session storage
+                saveAddressToSession();
+                
+                // Redirect to next step
+                window.location.href = "checkout2.html";
+            });
+            
+            // If returning to this step, load saved data
+            loadAddressFromSession();
+        });
+        
+        function loadCartSummary() {
+            $.getJSON('/cart', {}, function(data) {
+                // Clear the overview
+                $("#basket-overview").empty();
+                
+                let subtotal = 0;
+                
+                if (data && data.length > 0) {
+                    // Add each item to the overview
+                    $.each(data, function(index, cartItem) {
+                        $.getJSON('/catalogue/' + cartItem.itemId, {}, function(item) {
+                            if (item) {
+                                const totalPrice = cartItem.quantity * item.price;
+                                subtotal += totalPrice;
+                                
+                                // Add item to overview
+                                $("#basket-overview").append(`
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <img src="${item.imageUrl[0]}" alt="${item.name}" class="img-fluid rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                            <div class="ms-3">
+                                                <h6 class="mb-0">${item.name}</h6>
+                                                <small class="text-muted">Qty: ${cartItem.quantity}</small>
+                                            </div>
+                                        </div>
+                                        <span>$${totalPrice.toFixed(2)}</span>
+                                    </div>
+                                `);
+                                
+                                // Update totals
+                                updateOrderTotals(subtotal);
+                            }
+                        });
+                    });
+                } else {
+                    // If cart is empty, redirect to cart page
+                    window.location.href = "basket.html";
+                }
+            });
+        }
+        
+        function updateOrderTotals(subtotal) {
+            const shipping = subtotal > 50 ? 0 : 4.99;
+            const tax = subtotal * 0.2; // 20% tax rate
+            const total = subtotal + shipping + tax;
+            
+            $("#orderSubtotal").text('$' + subtotal.toFixed(2));
+            $("#orderShipping").text(shipping === 0 ? 'FREE' : '$' + shipping.toFixed(2));
+            $("#orderTax").text('$' + tax.toFixed(2));
+            $("#orderTotal").text('$' + total.toFixed(2));
+        }
+        
+        function saveAddressToSession() {
+            const addressData = {
+                firstName: $("#firstName").val(),
+                lastName: $("#lastName").val(),
+                email: $("#email").val(),
+                address: $("#address").val(),
+                country: $("#country").val(),
+                city: $("#city").val(),
+                postcode: $("#postcode").val(),
+                phone: $("#phone").val()
+            };
+            
+            sessionStorage.setItem('shippingAddress', JSON.stringify(addressData));
+        }
+        
+        function loadAddressFromSession() {
+            const savedAddress = sessionStorage.getItem('shippingAddress');
+            
+            if (savedAddress) {
+                const addressData = JSON.parse(savedAddress);
+                
+                $("#firstName").val(addressData.firstName);
+                $("#lastName").val(addressData.lastName);
+                $("#email").val(addressData.email);
+                $("#address").val(addressData.address);
+                $("#country").val(addressData.country);
+                $("#city").val(addressData.city);
+                $("#postcode").val(addressData.postcode);
+                $("#phone").val(addressData.phone);
+            }
+        }
+    </script>
+    
+    <style>
+        /* Stepper styles */
+        .bs-stepper {
+            margin-bottom: 2rem;
+        }
+        
+        .bs-stepper-header {
+            display: flex;
+            align-items: center;
+        }
+        
+        .step {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .step-trigger {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            min-width: 100px;
+            color: #6c757d;
+        }
+        
+        .bs-stepper-circle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            margin-bottom: 0.5rem;
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 50%;
+            color: #6c757d;
+            font-weight: bold;
+        }
+        
+        .active .bs-stepper-circle {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        .active .bs-stepper-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .line {
+            flex: 1;
+            height: 2px;
+            background-color: #dee2e6;
+        }
+        
+        .active + .line {
+            background-color: var(--primary-color);
+        }
+    </style>
+</body>
+</html>

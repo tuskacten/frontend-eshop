@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="all,follow">
+    <meta name="googlebot" content="index,follow,snippet,archive">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="WeaveSocks - Modern Microservices Demo Shop">
+    <meta name="author" content="WeaveSocks">
+    
+    <title>WeaveSocks - Checkout - Order Review</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.png">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Animation CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="css/modern-style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar will be loaded here -->
+    <div id="navbar"></div>
+    
+    <!-- Page Header -->
+    <section class="bg-primary text-white py-5 mb-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="display-4 fw-bold">Checkout</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/" class="text-white">Home</a></li>
+                            <li class="breadcrumb-item"><a href="basket.html" class="text-white">Shopping Cart</a></li>
+                            <li class="breadcrumb-item active text-white-50">Order Review</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-6 d-none d-md-block text-end">
+                    <i class="bi bi-check-circle display-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Checkout Steps -->
+    <div class="container mb-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="bs-stepper">
+                    <div class="bs-stepper-header" role="tablist">
+                        <div class="step completed" data-target="#account-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="account-part" id="account-part-trigger" aria-selected="false">
+                                <span class="bs-stepper-circle"><i class="bi bi-check"></i></span>
+                                <span class="bs-stepper-label">Address</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step completed" data-target="#shipping-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="shipping-part" id="shipping-part-trigger" aria-selected="false">
+                                <span class="bs-stepper-circle"><i class="bi bi-check"></i></span>
+                                <span class="bs-stepper-label">Delivery</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step completed" data-target="#payment-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="payment-part" id="payment-part-trigger" aria-selected="false">
+                                <span class="bs-stepper-circle"><i class="bi bi-check"></i></span>
+                                <span class="bs-stepper-label">Payment</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step active" data-target="#confirm-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="confirm-part" id="confirm-part-trigger" aria-selected="true">
+                                <span class="bs-stepper-circle">4</span>
+                                <span class="bs-stepper-label">Confirm</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Checkout Content -->
+    <div class="container mb-5">
+        <div class="row">
+            <!-- Order Review -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Order Review</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info" role="alert">
+                            <i class="bi bi-info-circle me-2"></i>Please review your order details before placing your order.
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6>Shipping Address</h6>
+                                    <a href="checkout1.html" class="text-primary small">Edit</a>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p class="mb-0" id="shippingAddressSummary">
+                                            Loading address...
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6>Delivery Method</h6>
+                                    <a href="checkout2.html" class="text-primary small">Edit</a>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p class="mb-0" id="deliveryMethodSummary">
+                                            Loading delivery method...
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6>Payment Method</h6>
+                                <a href="checkout3.html" class="text-primary small">Edit</a>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="mb-0" id="paymentMethodSummary">
+                                        Loading payment method...
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6 class="mb-3">Order Items</h6>
+                            <div class="table-responsive">
+                                <table class="table table-borderless align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th class="text-center">Quantity</th>
+                                            <th class="text-end">Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="orderItems">
+                                        <!-- Order items will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                            <label class="form-check-label" for="termsCheck">
+                                I agree to the <a href="#" class="text-decoration-none">Terms and Conditions</a>, <a href="#" class="text-decoration-none">Privacy Policy</a>, and <a href="#" class="text-decoration-none">Return Policy</a>
+                            </label>
+                        </div>
+                        
+                        <button id="placeOrderBtn" class="btn btn-primary btn-lg w-100" disabled>
+                            <i class="bi bi-lock me-2"></i>Place Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal</span>
+                            <span id="orderSubtotal">$0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping</span>
+                            <span id="orderShipping">$4.99</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tax</span>
+                            <span id="orderTax">$0.00</span>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="fw-bold">Total</span>
+                            <span class="fw-bold text-primary fs-4" id="orderTotal">$0.00</span>
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <span class="text-muted small">Order confirmation will be sent to your email</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-body">
+                        <h6>Need Help?</h6>
+                        <p class="text-muted small mb-0">If you have any questions about your order, please contact our customer support:</p>
+                        <div class="d-grid gap-2 mt-3">
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-chat-dots me-2"></i>Live Chat
+                            </a>
+                            <a href="tel:+18001234567" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-telephone me-2"></i>Call Us
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Order Confirmation Modal -->
+    <div class="modal fade" id="orderConfirmationModal" tabindex="-1" aria-labelledby="orderConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <i class="bi bi-check-circle text-success display-1 mb-4"></i>
+                    <h3 class="mb-4">Thank You for Your Order!</h3>
+                    <p class="mb-4">Your order has been received and is being processed. You will receive a confirmation email shortly.</p>
+                    <div class="alert alert-light border mb-4">
+                        <span class="text-muted">Order Number:</span>
+                        <strong id="orderNumber">000000</strong>
+                    </div>
+                    <a href="/" class="btn btn-primary">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer will be loaded here -->
+    <div id="footer"></div>
+    
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Cookie JS -->
+    <script src="js/js.cookie.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/client.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Load components
+            $("#navbar").load("navbar-modern.html");
+            $("#footer").load("footer-modern.html");
+            
+            // Load order details from session storage
+            displayShippingAddressSummary();
+            displayDeliveryMethodSummary();
+            displayPaymentMethodSummary();
+            
+            // Load cart items and summary
+            loadCartItems();
+            
+            // Enable/disable place order button based on terms checkbox
+            $("#termsCheck").change(function() {
+                if($(this).is(":checked")) {
+                    $("#placeOrderBtn").prop("disabled", false);
+                } else {
+                    $("#placeOrderBtn").prop("disabled", true);
+                }
+            });
+            
+            // Place order button click
+            $("#placeOrderBtn").click(function() {
+                placeOrder();
+            });
+        });
+        
+        function loadCartItems() {
+            $.getJSON('/cart', {}, function(data) {
+                // Clear the order items table
+                $("#orderItems").empty();
+                
+                let subtotal = 0;
+                
+                if (data && data.length > 0) {
+                    // Add each item to the order items table
+                    $.each(data, function(index, cartItem) {
+                        $.getJSON('/catalogue/' + cartItem.itemId, {}, function(item) {
+                            if (item) {
+                                const totalPrice = cartItem.quantity * item.price;
+                                subtotal += totalPrice;
+                                
+                                // Add item to order items
+                                $("#orderItems").append(`
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="${item.imageUrl[0]}" alt="${item.name}" class="img-fluid rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                                <div class="ms-3">
+                                                    <h6 class="mb-0">${item.name}</h6>
+                                                    <small class="text-muted">${item.tag[0]}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">${cartItem.quantity}</td>
+                                        <td class="text-end">$${totalPrice.toFixed(2)}</td>
+                                    </tr>
+                                `);
+                                
+                                // Update order summary
+                                updateOrderSummary(subtotal);
+                            }
+                        });
+                    });
+                } else {
+                    // If cart is empty, redirect to cart page
+                    window.location.href = "basket.html";
+                }
+            });
+        }
+        
+        function updateOrderSummary(subtotal) {
+            // Get shipping cost from session storage
+            const deliveryMethod = JSON.parse(sessionStorage.getItem('deliveryMethod') || '{}');
+            const shipping = deliveryMethod.cost || 4.99;
+            
+            const tax = subtotal * 0.2; // 20% tax rate
+            const total = subtotal + shipping + tax;
+            
+            $("#orderSubtotal").text('$' + subtotal.toFixed(2));
+            $("#orderShipping").text(shipping === 0 ? 'FREE' : '$' + shipping.toFixed(2));
+            $("#orderTax").text('$' + tax.toFixed(2));
+            $("#orderTotal").text('$' + total.toFixed(2));
+        }
+        
+        function displayShippingAddressSummary() {
+            const savedAddress = sessionStorage.getItem('shippingAddress');
+            
+            if (savedAddress) {
+                const addressData = JSON.parse(savedAddress);
+                
+                $("#shippingAddressSummary").html(`
+                    ${addressData.firstName} ${addressData.lastName}<br>
+                    ${addressData.address}<br>
+                    ${addressData.city}, ${addressData.postcode}<br>
+                    ${addressData.country}<br>
+                    ${addressData.phone}
+                `);
+            } else {
+                // If no address data, redirect back to address step
+                window.location.href = "checkout1.html";
+            }
+        }
+        
+        function displayDeliveryMethodSummary() {
+            const savedDelivery = sessionStorage.getItem('deliveryMethod');
+            
+            if (savedDelivery) {
+                const deliveryData = JSON.parse(savedDelivery);
+                let methodName = 'Standard Delivery';
+                let methodTime = '3-5 business days';
+                
+                if (deliveryData.method === 'express') {
+                    methodName = 'Express Delivery';
+                    methodTime = '1-2 business days';
+                } else if (deliveryData.method === 'nextDay') {
+                    methodName = 'Next Day Delivery';
+                    methodTime = 'Next business day';
+                }
+                
+                $("#deliveryMethodSummary").html(`
+                    <strong>${methodName}</strong><br>
+                    ${methodTime}<br>
+                    <span class="text-primary">$${deliveryData.cost.toFixed(2)}</span>
+                `);
+            } else {
+                // If no delivery method, redirect back to delivery step
+                window.location.href = "checkout2.html";
+            }
+        }
+        
+        function displayPaymentMethodSummary() {
+            const savedPayment = sessionStorage.getItem('paymentMethod');
+            
+            if (savedPayment) {
+                const paymentData = JSON.parse(savedPayment);
+                let paymentMethodHtml = '';
+                
+                if (paymentData.method === 'card') {
+                    const cardDetails = paymentData.cardDetails;
+                    const maskedNumber = 'XXXX-XXXX-XXXX-' + cardDetails.number.slice(-4);
+                    
+                    paymentMethodHtml = `
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-credit-card fs-4 me-3"></i>
+                            <div>
+                                <strong>Credit Card</strong><br>
+                                ${maskedNumber}<br>
+                                Expires: ${cardDetails.expiryMonth}/${cardDetails.expiryYear}
+                            </div>
+                        </div>
+                    `;
+                } else if (paymentData.method === 'paypal') {
+                    paymentMethodHtml = `
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-paypal fs-4 me-3"></i>
+                            <div>
+                                <strong>PayPal</strong><br>
+                                Payment will be processed via PayPal
+                            </div>
+                        </div>
+                    `;
+                } else if (paymentData.method === 'applepay') {
+                    paymentMethodHtml = `
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-apple fs-4 me-3"></i>
+                            <div>
+                                <strong>Apple Pay</strong><br>
+                                Payment will be processed via Apple Pay
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                $("#paymentMethodSummary").html(paymentMethodHtml);
+            } else {
+                // If no payment method, redirect back to payment step
+                window.location.href = "checkout3.html";
+            }
+        }
+        
+        function placeOrder() {
+            // Get order details from session storage
+            const address = JSON.parse(sessionStorage.getItem('shippingAddress'));
+            const delivery = JSON.parse(sessionStorage.getItem('deliveryMethod'));
+            const payment = JSON.parse(sessionStorage.getItem('paymentMethod'));
+            const totals = JSON.parse(sessionStorage.getItem('orderTotals'));
+            
+            // Create order object
+            const order = {
+                firstName: address.firstName,
+                lastName: address.lastName,
+                address: address.address,
+                city: address.city,
+                postcode: address.postcode,
+                country: address.country,
+                deliveryMethod: delivery.method,
+                paymentMethod: payment.method,
+                total: totals.total
+            };
+            
+            // Generate a random order number
+            const orderNumber = 'WS' + Math.floor(100000 + Math.random() * 900000);
+            $('#orderNumber').text(orderNumber);
+            
+            // Show confirmation modal
+            $('#orderConfirmationModal').modal('show');
+            
+            // Submit order to server (dummy implementation)
+            $.post('/orders', order, function(response) {
+                console.log('Order placed successfully', response);
+                
+                // Clear cart after successful order
+                $.ajax({
+                    url: '/cart',
+                    type: 'DELETE',
+                    success: function() {
+                        console.log('Cart cleared');
+                        
+                        // Clear session storage
+                        sessionStorage.removeItem('shippingAddress');
+                        sessionStorage.removeItem('deliveryMethod');
+                        sessionStorage.removeItem('paymentMethod');
+                        sessionStorage.removeItem('orderTotals');
+                    }
+                });
+            }).fail(function(error) {
+                console.error('Error placing order', error);
+                // For demo purposes, we still show success in the demo
+            });
+        }
+    </script>
+    
+    <style>
+        /* Stepper styles */
+        .bs-stepper {
+            margin-bottom: 2rem;
+        }
+        
+        .bs-stepper-header {
+            display: flex;
+            align-items: center;
+        }
+        
+        .step {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .step-trigger {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            min-width: 100px;
+            color: #6c757d;
+        }
+        
+        .bs-stepper-circle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            margin-bottom: 0.5rem;
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 50%;
+            color: #6c757d;
+            font-weight: bold;
+        }
+        
+        .active .bs-stepper-circle {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        .completed .bs-stepper-circle {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+        
+        .active .bs-stepper-label, .completed .bs-stepper-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .line {
+            flex: 1;
+            height: 2px;
+            background-color: #dee2e6;
+        }
+        
+        .active + .line, .completed + .line {
+            background-color: var(--primary-color);
+        }
+    </style>
+</body>
+</html>

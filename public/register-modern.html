@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="all,follow">
+    <meta name="googlebot" content="index,follow,snippet,archive">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="WeaveSocks - Modern Microservices Demo Shop">
+    <meta name="author" content="WeaveSocks">
+    
+    <title>WeaveSocks - Create an Account</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.png">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Animation CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="css/modern-style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar will be loaded here -->
+    <div id="navbar"></div>
+    
+    <!-- Registration Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4 p-lg-5">
+                            <div class="text-center mb-4">
+                                <h1 class="h3 mb-3 fw-bold">Create Your Account</h1>
+                                <p class="text-muted">Join the WeaveSocks community today</p>
+                            </div>
+                            
+                            <!-- Alert for errors -->
+                            <div class="alert alert-danger d-none" id="register-message"></div>
+                            
+                            <!-- Registration Form -->
+                            <form id="register-form">
+                                <div class="row">
+                                    <!-- Personal Information -->
+                                    <div class="col-md-6">
+                                        <h5 class="mb-3">Personal Information</h5>
+                                        
+                                        <div class="mb-3">
+                                            <label for="firstName" class="form-label">First Name</label>
+                                            <input type="text" class="form-control" id="firstName" name="firstName" required>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="lastName" class="form-label">Last Name</label>
+                                            <input type="text" class="form-control" id="lastName" name="lastName" required>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="email" name="email" required>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="phone" class="form-label">Phone Number</label>
+                                            <input type="tel" class="form-control" id="phone" name="phone">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Account Information -->
+                                    <div class="col-md-6">
+                                        <h5 class="mb-3">Account Information</h5>
+                                        
+                                        <div class="mb-3">
+                                            <label for="username" class="form-label">Username</label>
+                                            <input type="text" class="form-control" id="username" name="username" required>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label">Password</label>
+                                            <input type="password" class="form-control" id="password" name="password" required>
+                                            <div class="form-text">Password must be at least 8 characters long.</div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="passwordConfirm" class="form-label">Confirm Password</label>
+                                            <input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <hr class="my-4">
+                                
+                                <!-- Address Information -->
+                                <h5 class="mb-3">Address Information</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="address" class="form-label">Address</label>
+                                            <input type="text" class="form-control" id="address" name="address" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="city" class="form-label">City</label>
+                                            <input type="text" class="form-control" id="city" name="city" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="postcode" class="form-label">Postal Code</label>
+                                            <input type="text" class="form-control" id="postcode" name="postcode" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="country" class="form-label">Country</label>
+                                            <select class="form-select" id="country" name="country" required>
+                                                <option value="">Select Country</option>
+                                                <option value="United Kingdom">United Kingdom</option>
+                                                <option value="United States">United States</option>
+                                                <option value="France">France</option>
+                                                <option value="Germany">Germany</option>
+                                                <option value="Spain">Spain</option>
+                                                <option value="Italy">Italy</option>
+                                                <option value="Canada">Canada</option>
+                                                <option value="Australia">Australia</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4 form-check">
+                                    <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
+                                    <label class="form-check-label" for="terms">
+                                        I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                                    </label>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary btn-lg">Create Account</button>
+                                    <a href="login.html" class="btn btn-outline-secondary">Already have an account? Sign In</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer will be loaded here -->
+    <div id="footer"></div>
+    
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Cookie JS -->
+    <script src="js/js.cookie.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/client.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Load components
+            $("#navbar").load("navbar-modern.html");
+            $("#footer").load("footer-modern.html");
+            
+            // Check if user is already logged in
+            if ($.cookie('logged_in') != null && $.cookie('logged_in') != "") {
+                window.location.href = "/";
+            }
+            
+            // Form validation
+            $("#register-form").submit(function(e) {
+                e.preventDefault();
+                
+                // Basic validation
+                if ($("#password").val() !== $("#passwordConfirm").val()) {
+                    $("#register-message").removeClass("d-none").text("Passwords do not match.");
+                    return;
+                }
+                
+                if ($("#password").val().length < 8) {
+                    $("#register-message").removeClass("d-none").text("Password must be at least 8 characters long.");
+                    return;
+                }
+                
+                // Prepare data for registration
+                let registrationData = {
+                    username: $("#username").val(),
+                    password: $("#password").val(),
+                    email: $("#email").val(),
+                    firstName: $("#firstName").val(),
+                    lastName: $("#lastName").val(),
+                    address: {
+                        street: $("#address").val(),
+                        city: $("#city").val(),
+                        postcode: $("#postcode").val(),
+                        country: $("#country").val()
+                    },
+                    phone: $("#phone").val()
+                };
+                
+                // Submit registration
+                $.ajax({
+                    url: "/register",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(registrationData),
+                    success: function(data) {
+                        // Set logged in cookie
+                        $.cookie('logged_in', registrationData.username, { path: '/' });
+                        
+                        // Redirect to home page
+                        window.location.href = "/";
+                    },
+                    error: function(jqXHR) {
+                        let errorMessage = "Registration failed. Please try again.";
+                        
+                        if (jqXHR.status === 409) {
+                            errorMessage = "This username is already taken. Please choose another one.";
+                        }
+                        
+                        $("#register-message").removeClass("d-none").text(errorMessage);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">
+            <img src="img/weavesocks-logo.png" alt="WeaveSocks" height="40"> WeaveSocks
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Categories
+                    </a>
+                    <ul class="dropdown-menu border-0 shadow" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="category.html?category=formal">Formal Socks</a></li>
+                        <li><a class="dropdown-item" href="category.html?category=casual">Casual Socks</a></li>
+                        <li><a class="dropdown-item" href="category.html?category=sport">Sport Socks</a></li>
+                        <li><a class="dropdown-item" href="category.html?category=all">All Socks</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="basket.html">
+                        <i class="bi bi-bag"></i> 
+                        <span class="badge bg-primary rounded-pill" id="numItemsInCart">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="customer-orders.html">My Orders</a>
+                </li>
+                <li class="nav-item" id="login-menu">
+                    <a class="nav-link btn btn-outline-primary ms-lg-3 px-4" href="login.html">Login</a>
+                </li>
+                <li class="nav-item dropdown d-none" id="loggedin-menu">
+                    <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle"></i> <span id="howdy"></span>
+                    </a>
+                    <ul class="dropdown-menu border-0 shadow" aria-labelledby="accountDropdown">
+                        <li><a class="dropdown-item" href="customer-account.html">My Account</a></li>
+                        <li><a class="dropdown-item" href="customer-wishlist.html">Wishlist</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout(); return false;">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<script>
+$(document).ready(function() {
+    $.ajaxSetup({
+        contentType: "application/json; charset=utf-8"
+    });
+
+    // Sử dụng endpoint /api/cart đã được mock thay vì /cart/items
+    $.get('/api/cart', {})
+    .done(function(data) {
+        $('#numItemsInCart').text(data.length);
+        console.log('Cart data loaded successfully:', data);
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        console.error('Error loading cart data:', textStatus, errorThrown);
+        $('#numItemsInCart').text('0');
+    });
+
+    if ($.cookie('logged_in') != null && $.cookie('logged_in') != "") {
+        $("#login-menu").addClass("d-none");
+        $("#loggedin-menu").removeClass("d-none");
+        $("#howdy").html($.cookie('logged_in'));
+    } else {
+        $("#login-menu").removeClass("d-none");
+        $("#loggedin-menu").addClass("d-none");
+    }
+});
+
+function logout() {
+    $.removeCookie('logged_in', { path: '/' });
+    $("#login-menu").removeClass("d-none");
+    $("#loggedin-menu").addClass("d-none");
+    location.reload();
+}
+</script>
