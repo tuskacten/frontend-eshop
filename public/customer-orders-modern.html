@@ -160,7 +160,10 @@
             $.getJSON('/orders', {})
                 .done(function(data) {
                     // Đơn hàng từ server luôn có trạng thái Shipped
-                    data.forEach(order => { order.status = 'Shipped'; });
+                    data.forEach(order => { 
+                        // Chỉ đặt trạng thái là Shipped nếu chưa có trạng thái
+                        if (!order.status) order.status = 'Shipped';
+                    });
                     // Gộp đơn hàng: đơn hàng bạn tạo luôn ở đầu
                     let allOrders = [...myOrders];
                     data.forEach(function(order) {
@@ -185,10 +188,11 @@
                             }
                             var date = new Date(element.date);
                             var formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                            var statusClass = "bg-success";
+                            var statusClass = "bg-warning";
                             var statusText = element.status || "Processing";
                             if (statusText === "Processing") {
                                 statusClass = "bg-warning";
+                                statusText = "Processing";
                             } else if (statusText === "Shipped") {
                                 statusClass = "bg-success";
                             }
@@ -224,6 +228,12 @@
                             var formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                             var statusClass = "bg-warning";
                             var statusText = element.status || "Processing";
+                            if (statusText === "Processing") {
+                                statusClass = "bg-warning";
+                                statusText = "Processing";
+                            } else if (statusText === "Shipped") {
+                                statusClass = "bg-success";
+                            }
                             $('#tableOrders').append(`
                                 <tr>
                                     <td class="fw-medium">#${id}</td>
@@ -273,6 +283,13 @@
         .account-sidebar .list-group-item:hover:not(.active) {
             background-color: rgba(0, 0, 0, 0.02);
             border-left-color: rgba(var(--primary-rgb), 0.3);
+        }
+
+        /* Order status styles */
+        .badge.bg-warning {
+            background-color: #ff9800 !important;
+            color: #fff;
+            font-weight: 600;
         }
     </style>
 </body>

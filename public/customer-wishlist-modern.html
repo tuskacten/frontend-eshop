@@ -19,8 +19,8 @@
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     
     <!-- Animation CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
@@ -47,7 +47,7 @@
                     </nav>
                 </div>
                 <div class="col-md-6 d-none d-md-block text-end">
-                    <i class="fas fa-heart display-1 opacity-50"></i>
+                    <i class="bi bi-heart display-1 opacity-50"></i>
                 </div>
             </div>
         </div>
@@ -64,16 +64,16 @@
                     </div>
                     <div class="list-group list-group-flush">
                         <a href="customer-orders-modern.html" class="list-group-item list-group-item-action">
-                            <i class="fas fa-shopping-bag me-2"></i> My Orders
+                            <i class="bi bi-box-seam me-2"></i> My Orders
                         </a>
                         <a href="customer-wishlist-modern.html" class="list-group-item list-group-item-action active">
-                            <i class="fas fa-heart me-2"></i> My Wishlist
+                            <i class="bi bi-heart me-2"></i> My Wishlist
                         </a>
                         <a href="customer-account-modern.html" class="list-group-item list-group-item-action">
-                            <i class="fas fa-user me-2"></i> My Profile
+                            <i class="bi bi-person me-2"></i> My Profile
                         </a>
                         <a href="#" onclick="logout(); return false;" class="list-group-item list-group-item-action text-danger">
-                            <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            <i class="bi bi-box-arrow-right me-2"></i> Logout
                         </a>
                     </div>
                 </div>
@@ -91,21 +91,30 @@
                     <div class="card-body">
                         <p class="text-muted mb-4">Items you save to your wishlist will appear here. Add your favorite products to come back to them later.</p>
                         
-                        <!-- Wishlist Items Grid -->
-                        <div id="wishlistItems" class="row">
-                            <!-- Items will be loaded here -->
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableWishlist">
+                                    <!-- Wishlist items will be loaded here -->
+                                </tbody>
+                            </table>
                         </div>
                         
                         <!-- Empty state (shown when no wishlist items) -->
-                        <div id="emptyWishlist" class="text-center py-5">
+                        <div id="emptyWishlist" class="text-center py-5 d-none">
                             <div class="mb-4">
-                                <i class="fas fa-heart empty-wishlist-icon"></i>
+                                <i class="bi bi-heart display-1 text-muted"></i>
                             </div>
-                            <h4 class="font-weight-bold">Your wishlist is empty</h4>
-                            <p class="text-muted mb-4">Add items to your wishlist to save them for later.</p>
-                            <a href="category.html" class="btn btn-primary btn-lg continue-shopping-btn shadow-sm">
-                                <i class="fas fa-shopping-cart me-2"></i> Continue Shopping
-                            </a>
+                            <h4>Your wishlist is empty</h4>
+                            <p class="text-muted">Add items to your wishlist to save them for later.</p>
+                            <a href="category.html" class="btn btn-primary">Start Shopping</a>
                         </div>
                     </div>
                 </div>
@@ -124,6 +133,7 @@
     
     <!-- Cookie JS -->
     <script src="js/js.cookie.js"></script>
+    <script src="js/jquery.cookie.js"></script>
     
     <!-- Custom JS -->
     <script src="js/client.js"></script>
@@ -163,59 +173,62 @@
         
         function loadWishlistData() {
             // Show loading state
-            $('#wishlistItems').html('<div class="col-12 text-center py-3" id="loading"><i class="fas fa-spinner fa-spin me-2"></i> Loading your wishlist...</div>');
+            $('#tableWishlist').html('<tr><td colspan="4" class="text-center py-3"><i class="bi bi-hourglass-split me-2"></i> Loading your wishlist...</td></tr>');
             
             // Fetch wishlist data from API
             $.get('/api/wishlist', {})
                 .done(function(data) {
-                    // Remove loading indicator
-                    $('#loading').remove();
-                    
                     // Update wishlist count badge
                     $('#wishlistCount').text(data.length + ' Item' + (data.length !== 1 ? 's' : ''));
                     
                     if (data && data.length > 0) {
-                        $('#emptyWishlist').hide();
+                        $('#emptyWishlist').addClass('d-none');
                         renderWishlistItems(data);
                     } else {
-                        $('#wishlistItems').empty();
-                        $('#emptyWishlist').show();
+                        $('#tableWishlist').empty();
+                        $('#emptyWishlist').removeClass('d-none');
                     }
                 })
                 .fail(function(jqXHR, textStatus, errorThrown) {
                     console.error('Error loading wishlist data:', textStatus, errorThrown);
-                    $('#loading').remove();
-                    $('#wishlistItems').empty();
-                    $('#emptyWishlist').show();
+                    $('#tableWishlist').html(`
+                        <tr>
+                            <td colspan="4" class="text-center py-4">
+                                <div class="alert alert-danger mb-0">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    Error loading wishlist. Please try again later.
+                                </div>
+                            </td>
+                        </tr>
+                    `);
+                    $('#emptyWishlist').addClass('d-none');
                 });
         }
         
         function renderWishlistItems(items) {
-            const wishlistContainer = $('#wishlistItems');
+            const wishlistContainer = $('#tableWishlist');
             wishlistContainer.empty();
             
-            // Add each item to the wishlist
+            // Add each item to the wishlist table
             items.forEach(function(item) {
                 const itemHtml = `
-                    <div class="col-md-4 mb-4 wishlist-item fade-in">
-                        <div class="card h-100">
-                            <div class="card-img-container">
-                                <img src="${item.imageUrl[0]}" class="card-img-top" alt="${item.name}">
+                    <tr class="wishlist-item fade-in">
+                        <td>
+                            <img src="${item.imageUrl[0]}" alt="${item.name}" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;">
+                        </td>
+                        <td class="fw-medium">${item.name}</td>
+                        <td class="text-primary fw-bold">$${item.price.toFixed(2)}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-sm btn-primary" onclick="addToCart('${item.id}')">
+                                    <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="removeFromWishlist('${item.id}')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </div>
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">${item.name}</h5>
-                                <p class="card-text text-primary fw-bold">$${item.price.toFixed(2)}</p>
-                                <div class="mt-auto d-flex justify-content-between">
-                                    <button class="btn btn-sm btn-primary" onclick="addToCart('${item.id}')">
-                                        <i class="fas fa-shopping-cart me-1"></i> Add to Cart
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="removeFromWishlist('${item.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        </td>
+                    </tr>
                 `;
                 
                 wishlistContainer.append(itemHtml);
@@ -244,7 +257,7 @@
         
         function addToCart(id) {
             // Add to cart animation
-            $('body').append('<div id="add-to-cart-animation" style="position:fixed;top:20px;right:20px;z-index:9999;background: rgba(45, 206, 137, 0.9);color:white;padding:10px 20px;border-radius:4px;"><i class="fas fa-check-circle me-2"></i> Added to cart!</div>');
+            $('body').append('<div id="add-to-cart-animation" style="position:fixed;top:20px;right:20px;z-index:9999;background: rgba(45, 206, 137, 0.9);color:white;padding:10px 20px;border-radius:4px;"><i class="bi bi-check-circle me-2"></i> Added to cart!</div>');
             $('#add-to-cart-animation').hide().fadeIn().delay(1500).fadeOut(function() {
                 $(this).remove();
             });
@@ -274,5 +287,35 @@
             window.location.href = "index.html";
         }
     </script>
+    
+    <style>
+        /* Account sidebar styles */
+        .account-sidebar .list-group-item {
+            border-left: 3px solid transparent;
+            padding: 0.75rem 1.25rem;
+        }
+        
+        .account-sidebar .list-group-item.active {
+            background-color: rgba(var(--primary-rgb), 0.1);
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .account-sidebar .list-group-item:hover:not(.active) {
+            background-color: rgba(0, 0, 0, 0.02);
+            border-left-color: rgba(var(--primary-rgb), 0.3);
+        }
+        
+        /* Fade in animation */
+        .fade-in {
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
 </body>
 </html>

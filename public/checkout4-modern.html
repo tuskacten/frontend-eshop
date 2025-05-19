@@ -250,6 +250,10 @@
                         <span class="text-muted">Order Number:</span>
                         <strong id="orderNumber">000000</strong>
                     </div>
+                    <div class="alert alert-warning mb-4">
+                        <i class="bi bi-clock-history me-2"></i>
+                        <strong>Status: Processing</strong>
+                    </div>
                     <a href="/" class="btn btn-primary" id="continueShoppingBtn">Continue Shopping</a>
                 </div>
             </div>
@@ -540,14 +544,15 @@
             const orderNumber = 'WS' + Math.floor(100000 + Math.random() * 900000);
             $('#orderNumber').text(orderNumber);
             
-            // Show confirmation modal
+            // Show confirmation modal with processing status message
             $('#orderConfirmationModal').modal('show');
+            $('.modal-body p').text('Your order has been received and is being processed. You will receive a confirmation email shortly.');
             
             // Submit order to server (dummy implementation)
             $.post('/orders', order, function(response) {
                 console.log('Order placed successfully', response);
                 
-                // Tạo đối tượng đơn hàng đầy đủ
+                // Tạo đối tượng đơn hàng đầy đủ với trạng thái Processing
                 const newOrder = {
                     id: orderNumber,
                     date: new Date().toISOString(),
@@ -575,6 +580,7 @@
                 myOrders.unshift(newOrder);
                 localStorage.setItem('myOrders', JSON.stringify(myOrders));
                 console.log('myOrders in localStorage:', myOrders);
+                
                 // Clear cart after successful order - with retry mechanism
                 function clearCart(retryCount = 0) {
                     $.ajax({
@@ -617,10 +623,14 @@
                 }
                 // Start the cart clearing process
                 clearCart();
+                
                 // Chuyển đến trang My Orders sau khi đặt hàng thành công
+                $('#continueShoppingBtn').text('View My Orders');
+                $('#continueShoppingBtn').attr('href', 'customer-orders-modern.html');
+                
                 setTimeout(function() {
                     window.location.href = "customer-orders-modern.html";
-                }, 3000); // Đợi 3 giây để người dùng thấy thông báo thành công
+                }, 5000); // Đợi 5 giây để người dùng thấy thông báo thành công
             }).fail(function(error) {
                 console.error('Error placing order', error);
                 // For demo purposes, we still show success in the demo
