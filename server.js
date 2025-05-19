@@ -23,9 +23,39 @@ app.use(helpers.rewriteSlash);
 app.use(metrics);
 
 // Configure body parser middleware before route handlers
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(helpers.sessionMiddleware);
+app.use(session({
+  secret: 'frontend-eshop-secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}));
+
+// Add a proper error handler before sessionMiddleware
+app.use(function(err, req, res, next) {
+  console.error("Error caught by error handler:", err);
+  // Handle body-parser JSON parse errors
+  if (err && err.type === 'entity.parse.failed') {
+    return res.status(err.statusCode || 400).json({
+      status: 'error',
+      message: 'Invalid request payload. Expecting valid JSON.',
+      details: err.message
+    });
+  }
+  next(err);
+});
+
+// Use sessionMiddleware only for normal request processing
+app.use(function(req, res, next) {
+  if (!req.cookies || !req.cookies.logged_in) {
+    if (req.session) {
+      req.session.customerId = null;
+    }
+  }
+  next();
+});
 
 // Modern UI as default
 app.get('/', function(req, res) {

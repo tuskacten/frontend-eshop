@@ -154,8 +154,11 @@
         });
         
         function loadOrders() {
-            // Lấy đơn hàng từ localStorage
+            // Lấy đơn hàng từ localStorage và loại bỏ các đơn hàng ảo bắt đầu bằng "WS"
             let myOrders = JSON.parse(localStorage.getItem('myOrders') || '[]');
+            myOrders = myOrders.filter(o => !(typeof o.id === 'string' && o.id.startsWith('WS')));
+            // Cập nhật localStorage nếu đã xoá mục ảo
+            localStorage.setItem('myOrders', JSON.stringify(myOrders));
             
             $.getJSON('/orders', {})
                 .done(function(data) {
