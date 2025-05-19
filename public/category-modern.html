@@ -78,8 +78,16 @@
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="priceRange" class="form-label">Filter by price</label>
-                            <input type="range" class="form-range" min="0" max="100" id="priceRange">
+                            <label class="form-label">Filter by price</label>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="badge bg-primary" id="minPriceValue">$0</span>
+                                <span class="badge bg-primary" id="maxPriceValue">$50</span>
+                            </div>
+                            <div class="price-slider-container position-relative mb-3">
+                                <div class="price-range-track"></div>
+                                <input type="range" class="form-range position-absolute w-100" min="0" max="100" value="0" step="1" id="minPriceRange">
+                                <input type="range" class="form-range position-absolute w-100" min="0" max="100" value="50" step="1" id="maxPriceRange">
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
@@ -89,7 +97,7 @@
                                 <span class="badge bg-light text-dark">$100</span>
                             </div>
                         </div>
-                        <button class="btn btn-primary w-100 mt-3">Apply Filter</button>
+                        <button class="btn btn-primary w-100 mt-3" id="applyPriceFilter">Apply Filter</button>
                     </div>
                 </div>
             </div>
@@ -105,7 +113,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="d-flex justify-content-md-end">
-                                    <select class="form-select me-2" style="width: auto;">
+                                    <select class="form-select me-2" style="width: auto;" id="productSort">
                                         <option value="price_asc">Price: Low to High</option>
                                         <option value="price_desc">Price: High to Low</option>
                                         <option value="name_asc">Name: A to Z</option>
@@ -122,6 +130,17 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                
+                <!-- Active Filters -->
+                <div id="activeFilters" class="mb-4" style="display: none;">
+                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                        <span class="fw-bold me-2">Active Filters:</span>
+                        <div id="activeFilterTags"></div>
+                        <button id="clearAllFilters" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i>Clear All
+                        </button>
                     </div>
                 </div>
                 
@@ -177,24 +196,85 @@
             let params = (new URL(document.location)).searchParams;
             let category = params.get("category") || "all";
             
+            // Save current category page URL for returning after checkout
+            sessionStorage.setItem('lastCategoryPage', window.location.href);
+            
             // Update UI based on category
             updateCategoryUI(category);
             
             // Fetch products
             fetchProducts(category);
             
+            // Set default view (grid view)
+            applyGridView();
+            
+            // Sorting products
+            $("#productSort").change(function() {
+                sortProducts($(this).val());
+            });
+            
             // View toggles
             $("#gridView").click(function() {
-                $(this).addClass("active");
-                $("#listView").removeClass("active");
-                $(".product-item").removeClass("list-view").addClass("grid-view");
+                applyGridView();
             });
             
             $("#listView").click(function() {
-                $(this).addClass("active");
-                $("#gridView").removeClass("active");
-                $(".product-item").removeClass("grid-view").addClass("list-view");
+                applyListView();
             });
+            
+            // Price Range Slider
+            let minPrice = 0;
+            let maxPrice = 50;
+            
+            $("#minPriceRange").on("input", function() {
+                minPrice = parseInt($(this).val());
+                
+                // Ensure min doesn't exceed max
+                if (minPrice > maxPrice) {
+                    maxPrice = minPrice;
+                    $("#maxPriceRange").val(maxPrice);
+                    $("#maxPriceValue").text("$" + maxPrice);
+                }
+                
+                $("#minPriceValue").text("$" + minPrice);
+            });
+            
+            $("#maxPriceRange").on("input", function() {
+                maxPrice = parseInt($(this).val());
+                
+                // Ensure max doesn't go below min
+                if (maxPrice < minPrice) {
+                    minPrice = maxPrice;
+                    $("#minPriceRange").val(minPrice);
+                    $("#minPriceValue").text("$" + minPrice);
+                }
+                
+                $("#maxPriceValue").text("$" + maxPrice);
+            });
+            
+            // Apply Price Filter Button
+            $("#applyPriceFilter").click(function() {
+                applyPriceFilter();
+            });
+            
+            $("#minPriceRange, #maxPriceRange").on("input", function() {
+                updatePriceRangeTrack();
+            });
+            
+            // Initial track update
+            updatePriceRangeTrack();
+            
+            function updatePriceRangeTrack() {
+                const minVal = parseInt($("#minPriceRange").val());
+                const maxVal = parseInt($("#maxPriceRange").val());
+                const minPercent = (minVal / 100) * 100;
+                const maxPercent = (maxVal / 100) * 100;
+                
+                $(".price-range-track").css({
+                    'left': minPercent + '%',
+                    'width': (maxPercent - minPercent) + '%'
+                });
+            }
         });
         
         function updateCategoryUI(category) {
@@ -224,42 +304,11 @@
             
             $.getJSON(url, {})
             .done(function(data) {
-                $("#products").empty();
-                console.log('API response:', data);
+                window.productsData = data; // Store data globally for sorting
                 
-                if (data != null && data.length > 0) {
-                    $("#productCount").text(`Showing ${data.length} products`);
-                    
-                    $.each(data, function(index, element) {
-                        $("#products").append(`
-                            <div class="col-md-6 col-lg-4">
-                                <div class="card product-card h-100 border-0 shadow-sm">
-                                    <div class="card-img-container">
-                                        <img src="${element.imageUrl ? element.imageUrl[0] : 'img/placeholder.jpg'}" alt="${element.name}" class="card-img-top">
-                                    </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">${element.name}</h5>
-                                        <p class="card-text small text-muted">${element.description || 'No description available'}</p>
-                                        <div class="d-flex justify-content-between align-items-center mt-3">
-                                            <span class="product-price">$${element.price}</span>
-                                            <a href="detail-modern.html?id=${element.id}" class="btn btn-primary btn-sm">View Details</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `);
-                    });
-                } else {
-                    $("#products").append(`
-                        <div class="col-12 text-center py-5">
-                            <div class="alert alert-info">
-                                <i class="bi bi-info-circle me-2"></i>
-                                No products found in this category. Please try another category.
-                            </div>
-                        </div>
-                    `);
-                    $("#productCount").text(`Showing 0 products`);
-                }
+                // Set default sorting to price_asc and apply it immediately
+                $("#productSort").val("price_asc");
+                sortProducts("price_asc");
             })
             .fail(function(jqXHR, textStatus, errorThrown) {
                 console.error('Error fetching products:', textStatus, errorThrown);
@@ -272,6 +321,229 @@
                     </div>
                 `);
             });
+        }
+        
+        function displayProducts(data) {
+            $("#products").empty();
+            console.log('Displaying products:', data);
+            
+            if (data != null && data.length > 0) {
+                $("#productCount").text(`Showing ${data.length} products`);
+                
+                $.each(data, function(index, element) {
+                    $("#products").append(`
+                        <div class="col-md-6 col-lg-4 product-item">
+                            <div class="card product-card h-100 border-0 shadow-sm">
+                                <div class="card-img-container">
+                                    <img src="${element.imageUrl ? element.imageUrl[0] : 'img/placeholder.jpg'}" alt="${element.name}" class="card-img-top">
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">${element.name}</h5>
+                                    <p class="card-text small text-muted">${element.description || 'No description available'}</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <span class="product-price">$${element.price}</span>
+                                        <a href="detail-modern.html?id=${element.id}" class="btn btn-primary btn-sm">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                });
+                
+                // Apply current view mode after products are loaded
+                if ($("#gridView").hasClass("active")) {
+                    applyGridView();
+                } else {
+                    applyListView();
+                }
+            } else {
+                $("#products").append(`
+                    <div class="col-12 text-center py-5">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            No products found in this category. Please try another category.
+                        </div>
+                    </div>
+                `);
+                $("#productCount").text(`Showing 0 products`);
+            }
+        }
+        
+        function sortProducts(sortOrder) {
+            if (!window.productsData) return;
+            
+            let sortedData = [...window.productsData];
+            
+            switch(sortOrder) {
+                case 'price_asc':
+                    sortedData.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price_desc':
+                    sortedData.sort((a, b) => b.price - a.price);
+                    break;
+                case 'name_asc':
+                    sortedData.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'name_desc':
+                    sortedData.sort((a, b) => b.name.localeCompare(a.name));
+                    break;
+            }
+            
+            displayProducts(sortedData);
+        }
+        
+        function applyGridView() {
+            $("#gridView").addClass("active");
+            $("#listView").removeClass("active");
+            $(".product-item").removeClass("list-view").addClass("grid-view");
+        }
+        
+        function applyListView() {
+            $("#listView").addClass("active");
+            $("#gridView").removeClass("active");
+            $(".product-item").removeClass("grid-view").addClass("list-view");
+        }
+        
+        function applyPriceFilter() {
+            if (!window.productsData) return;
+            
+            const minPrice = parseInt($("#minPriceRange").val());
+            const maxPrice = parseInt($("#maxPriceRange").val());
+            
+            // Store filter state
+            window.activeFilters = {
+                minPrice: minPrice,
+                maxPrice: maxPrice
+            };
+            
+            let filteredData = window.productsData.filter(product => 
+                product.price >= minPrice && product.price <= maxPrice
+            );
+            
+            // Apply current sort to filtered data
+            const currentSort = $("#productSort").val();
+            sortFilteredProducts(filteredData, currentSort);
+            
+            // Show active filters
+            updateActiveFilters();
+            
+            // Show toast notification
+            showToast(`Showing products between $${minPrice} and $${maxPrice}`);
+        }
+        
+        function sortFilteredProducts(data, sortOrder) {
+            let sortedData = [...data];
+            
+            switch(sortOrder) {
+                case 'price_asc':
+                    sortedData.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price_desc':
+                    sortedData.sort((a, b) => b.price - a.price);
+                    break;
+                case 'name_asc':
+                    sortedData.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'name_desc':
+                    sortedData.sort((a, b) => b.name.localeCompare(a.name));
+                    break;
+            }
+            
+            displayProducts(sortedData);
+        }
+        
+        function updateActiveFilters() {
+            if (!window.activeFilters) return;
+            
+            const filters = window.activeFilters;
+            $("#activeFilterTags").empty();
+            
+            if (filters.minPrice > 0 || filters.maxPrice < 100) {
+                $("#activeFilterTags").append(`
+                    <span class="badge bg-primary me-2">
+                        Price: $${filters.minPrice} - $${filters.maxPrice}
+                        <i class="bi bi-x ms-1" role="button" data-filter="price"></i>
+                    </span>
+                `);
+                $("#activeFilters").show();
+            } else {
+                $("#activeFilters").hide();
+            }
+            
+            // Clear specific filter
+            $("#activeFilterTags .bi-x").click(function() {
+                const filterType = $(this).data('filter');
+                
+                if (filterType === 'price') {
+                    // Reset price filter
+                    $("#minPriceRange").val(0);
+                    $("#maxPriceRange").val(100);
+                    $("#minPriceValue").text("$0");
+                    $("#maxPriceValue").text("$100");
+                    updatePriceRangeTrack();
+                    
+                    // Clear from active filters
+                    delete window.activeFilters.minPrice;
+                    delete window.activeFilters.maxPrice;
+                }
+                
+                // Reapply filters
+                resetAllFilters();
+            });
+            
+            // Clear all filters
+            $("#clearAllFilters").click(function() {
+                resetAllFilters();
+            });
+        }
+        
+        function resetAllFilters() {
+            // Reset all filter inputs
+            $("#minPriceRange").val(0);
+            $("#maxPriceRange").val(100);
+            $("#minPriceValue").text("$0");
+            $("#maxPriceValue").text("$100");
+            updatePriceRangeTrack();
+            
+            // Clear filter state
+            window.activeFilters = {};
+            
+            // Display all products with current sort
+            const currentSort = $("#productSort").val();
+            sortProducts(currentSort);
+            
+            // Hide active filters section
+            $("#activeFilters").hide();
+        }
+        
+        function showToast(message) {
+            // Create toast element
+            const toastHTML = `
+                <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header">
+                            <i class="bi bi-filter me-2 text-primary"></i>
+                            <strong class="me-auto">Price Filter</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove any existing toast
+            $(".toast-container").remove();
+            
+            // Add new toast
+            $("body").append(toastHTML);
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                $(".toast").toast("hide");
+                setTimeout(() => $(".position-fixed.bottom-0.end-0.p-3").remove(), 500);
+            }, 3000);
         }
     </script>
 </body>

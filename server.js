@@ -23,9 +23,39 @@ app.use(helpers.rewriteSlash);
 app.use(metrics);
 
 // Configure body parser middleware before route handlers
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(helpers.sessionMiddleware);
+app.use(session({
+  secret: 'frontend-eshop-secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}));
+
+// Add a proper error handler before sessionMiddleware
+app.use(function(err, req, res, next) {
+  console.error("Error caught by error handler:", err);
+  // Handle body-parser JSON parse errors
+  if (err && err.type === 'entity.parse.failed') {
+    return res.status(err.statusCode || 400).json({
+      status: 'error',
+      message: 'Invalid request payload. Expecting valid JSON.',
+      details: err.message
+    });
+  }
+  next(err);
+});
+
+// Use sessionMiddleware only for normal request processing
+app.use(function(req, res, next) {
+  if (!req.cookies || !req.cookies.logged_in) {
+    if (req.session) {
+      req.session.customerId = null;
+    }
+  }
+  next();
+});
 
 // Modern UI as default
 app.get('/', function(req, res) {
@@ -76,7 +106,7 @@ app.get('/checkout4.html', function(req, res) {
 
 // Modern account pages
 app.get('/customer-orders.html', function(req, res) {
-    res.sendFile(path.join(__dirname, 'public', 'customer-orders-modern.html'));
+    res.redirect('/customer-orders-modern.html');
 });
 
 // Modern wishlist page
@@ -165,6 +195,36 @@ const mockProducts = [
         imageUrl: ["/img/youtube_socks.jpg", "/img/product3.jpg"],
         tag: ["formal", "red"],
         category: "casual"
+    },
+    {
+        id: "a0a4f044-b040-410d-8ead-4de0446aec7e",
+        name: "Stripe Pattern",
+        description: "Classic stripe pattern for everyday wear",
+        price: 12.50,
+        count: 550,
+        imageUrl: ["/img/product1.jpg", "/img/product2.jpg"],
+        tag: ["casual", "pattern", "striped"],
+        category: "casual"
+    },
+    {
+        id: "808a2de1-1aaa-4c25-a9b9-6612e8f29a39",
+        name: "Dotted Elegance",
+        description: "Elegant polka dot pattern for formal occasions",
+        price: 16.75,
+        count: 320,
+        imageUrl: ["/img/product2.jpg", "/img/product1.jpg"],
+        tag: ["formal", "pattern", "dotted"],
+        category: "formal"
+    },
+    {
+        id: "b9a4f044-b040-410d-8ead-4de0446aec7e",
+        name: "Athletic Pro",
+        description: "Professional sports socks with extra cushioning",
+        price: 19.99,
+        count: 425,
+        imageUrl: ["/img/rugby_socks.jpg", "/img/holy_socks.jpg"],
+        tag: ["sport", "athletic", "professional"],
+        category: "sport"
     }
 ];
 
@@ -172,10 +232,16 @@ const mockProducts = [
 app.get('/api/catalogue', function(req, res) {
     const category = req.query.category;
     let filteredProducts = [...mockProducts];
+    const size = req.query.size ? parseInt(req.query.size) : undefined;
 
     // Nếu có tham số category, lọc sản phẩm theo category
     if (category && category !== "all") {
         filteredProducts = filteredProducts.filter(product => product.category === category);
+    }
+    
+    // Giới hạn số lượng sản phẩm trả về nếu có tham số size
+    if (size && !isNaN(size) && size > 0) {
+        filteredProducts = filteredProducts.slice(0, size);
     }
 
     res.json(filteredProducts);
@@ -346,8 +412,17 @@ app.delete('/api/cart', function(req, res) {
 
 // Thêm endpoint DELETE cho /cart
 app.delete('/cart', function(req, res) {
+    console.log("Request to clear cart received");
+    
+    // Chỉ xóa giỏ hàng, không ảnh hưởng đến danh sách sản phẩm
     mockCart = [];
-    res.status(200).json({status: "Cart cleared"});
+    
+    // Send a meaningful response with the current cart status
+    res.status(200).json({
+        status: "success",
+        message: "Cart cleared successfully. Products in category remain unchanged.", 
+        cart: mockCart
+    });
 });
 
 // Endpoint xóa một sản phẩm cụ thể khỏi giỏ hàng
@@ -449,76 +524,164 @@ app.delete('/api/wishlist/:id', function(req, res) {
     }
 });
 
-// Mock API endpoint cho đơn hàng
-app.get('/orders', function(req, res) {
-    // Dữ liệu mẫu cho đơn hàng
-    const mockOrders = [
-        {
-            id: "1",
-            customerId: "1",
-            customer: {
-                firstName: "User",
-                lastName: "Name",
-                email: "user@example.com"
-            },
-            address: {
-                street: "123 Main St",
-                city: "Anytown",
-                postcode: "12345",
-                country: "USA"
-            },
-            items: [
-                {
-                    itemId: "03fef6ac-1896-4ce8-bd69-b798f85c6e0b",
-                    quantity: 2,
-                    unitPrice: 99.99
-                },
-                {
-                    itemId: "3395a43e-2d88-40de-b95f-e00e1502085b",
-                    quantity: 1,
-                    unitPrice: 18.00
-                }
-            ],
-            total: 217.98,
-            date: "2025-05-10T14:30:00",
-            _links: {
-                self: {
-                    href: "/orders/1"
-                }
-            }
+// Thêm biến để lưu trữ đơn hàng
+let mockOrders = [
+    {
+        id: "1",
+        customerId: "1",
+        customer: {
+            firstName: "User",
+            lastName: "Name",
+            email: "user@example.com"
         },
-        {
-            id: "2",
-            customerId: "1",
-            customer: {
-                firstName: "User",
-                lastName: "Name",
-                email: "user@example.com"
+        address: {
+            street: "123 Main St",
+            city: "Anytown",
+            postcode: "12345",
+            country: "USA"
+        },
+        items: [
+            {
+                itemId: "03fef6ac-1896-4ce8-bd69-b798f85c6e0b",
+                quantity: 2,
+                unitPrice: 99.99
             },
-            address: {
-                street: "123 Main St",
-                city: "Anytown",
-                postcode: "12345",
-                country: "USA"
-            },
-            items: [
-                {
-                    itemId: "510a0d7e-8e83-4193-b483-e27e09ddc34d",
-                    quantity: 1,
-                    unitPrice: 15.00
-                }
-            ],
-            total: 15.00,
-            date: "2025-05-08T10:15:00",
-            _links: {
-                self: {
-                    href: "/orders/2"
-                }
+            {
+                itemId: "3395a43e-2d88-40de-b95f-e00e1502085b",
+                quantity: 1,
+                unitPrice: 18.00
+            }
+        ],
+        total: 217.98,
+        date: "2025-05-10T14:30:00",
+        status: "Shipped",
+        _links: {
+            self: {
+                href: "/orders/1"
             }
         }
-    ];
+    },
+    {
+        id: "2",
+        customerId: "1",
+        customer: {
+            firstName: "User",
+            lastName: "Name",
+            email: "user@example.com"
+        },
+        address: {
+            street: "123 Main St",
+            city: "Anytown",
+            postcode: "12345",
+            country: "USA"
+        },
+        items: [
+            {
+                itemId: "510a0d7e-8e83-4193-b483-e27e09ddc34d",
+                quantity: 1,
+                unitPrice: 15.00
+            }
+        ],
+        total: 15.00,
+        date: "2025-05-08T10:15:00",
+        status: "Shipped",
+        _links: {
+            self: {
+                href: "/orders/2"
+            }
+        }
+    }
+];
+
+// Mock API endpoint cho đơn hàng
+app.post('/orders', function(req, res) {
+    console.log("Received order placement request:", req.body);
     
+    // Tạo ID ngẫu nhiên cho đơn hàng
+    const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
+    
+    // Lấy thông tin chi tiết về các sản phẩm trong giỏ hàng
+    const items = mockCart.map(item => {
+        const product = mockProducts.find(p => p.id === item.itemId);
+        return {
+            itemId: item.itemId,
+            quantity: item.quantity,
+            unitPrice: product ? product.price : 0
+        };
+    });
+    
+    // Tính tổng giá trị đơn hàng
+    let total = 0;
+    items.forEach(item => {
+        total += item.quantity * item.unitPrice;
+    });
+    
+    // Thêm phí vận chuyển và thuế nếu cần
+    const shipping = req.body.shipping || 4.99;
+    const tax = total * 0.2; // 20% thuế
+    total += shipping + tax;
+    
+    // Lưu đơn hàng mới
+    const newOrder = {
+        id: orderId,
+        customerId: "1", // Giả định ID người dùng
+        customer: {
+            firstName: req.body.firstName || "User",
+            lastName: req.body.lastName || "Name",
+            email: "user@example.com"
+        },
+        address: {
+            street: req.body.address || "123 Main St",
+            city: req.body.city || "Anytown",
+            postcode: req.body.postcode || "12345",
+            country: req.body.country || "USA"
+        },
+        items: items,
+        total: parseFloat(total.toFixed(2)),
+        shipping: shipping,
+        tax: parseFloat(tax.toFixed(2)),
+        status: "Processing",
+        date: new Date().toISOString(),
+        _links: {
+            self: {
+                href: "/orders/" + orderId
+            }
+        }
+    };
+    
+    // Thêm vào danh sách đơn hàng
+    mockOrders.unshift(newOrder); // Thêm đơn hàng mới nhất lên đầu
+    
+    // Đảm bảo chỉ xóa giỏ hàng sau khi đặt hàng, không ảnh hưởng đến danh sách sản phẩm
+    console.log("Clearing cart as part of order placement (products unaffected)");
+    mockCart = [];
+    
+    // Gửi phản hồi thành công
+    res.status(201).json({
+        status: "success",
+        message: "Order placed successfully. Cart cleared but product listings remain unchanged.",
+        orderId: orderId,
+        order: newOrder
+    });
+});
+
+app.get('/orders', function(req, res) {
+    // Trả về danh sách đơn hàng đã lưu
     res.json(mockOrders);
+});
+
+// Thêm endpoint để xem chi tiết một đơn hàng
+app.get('/orders/:id', function(req, res) {
+    const orderId = req.params.id;
+    const order = mockOrders.find(o => o.id === orderId);
+    
+    if (order) {
+        res.json(order);
+    } else {
+        res.status(404).json({
+            message: "Order not found with ID: " + orderId
+        });
+    }
 });
 
 // Phục vụ các file tĩnh từ thư mục public

@@ -46,7 +46,6 @@
                     <p class="animate__animated animate__fadeIn animate__delay-1s">Discover our premium collection of socks that combine fashion, quality, and comfort for every occasion.</p>
                     <div class="animate__animated animate__fadeIn animate__delay-2s">
                         <a href="category.html?category=all" class="btn btn-light btn-lg me-3">Shop Now</a>
-                        <a href="#featured-products" class="btn btn-outline-light btn-lg">Featured Products</a>
                     </div>
                 </div>
                 <div class="col-lg-6 d-none d-lg-block">
@@ -145,21 +144,6 @@
         </div>
     </section>
     
-    <!-- Featured Products -->
-    <section id="featured-products" class="mb-5">
-        <div class="container">
-            <h2 class="text-center mb-5 fw-bold">Featured Products</h2>
-            <div class="swiper featured-swiper">
-                <div class="swiper-wrapper" id="featured-products-container">
-                    <!-- Products will be loaded here -->
-                </div>
-                <div class="swiper-pagination"></div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-            </div>
-        </div>
-    </section>
-    
     <!-- Newsletter -->
     <section class="py-5 bg-primary text-white mb-5">
         <div class="container">
@@ -211,58 +195,10 @@
                 }
             });
             
-            $("#footer").load("footer-modern.html");
+            $("#footer").load("footer.html");
             
-            // Initialize Swiper
-            setTimeout(function() {
-                new Swiper('.featured-swiper', {
-                    slidesPerView: 1,
-                    spaceBetween: 20,
-                    pagination: {
-                        el: '.swiper-pagination',
-                        clickable: true,
-                    },
-                    navigation: {
-                        nextEl: '.swiper-button-next',
-                        prevEl: '.swiper-button-prev',
-                    },
-                    breakpoints: {
-                        640: {
-                            slidesPerView: 2,
-                        },
-                        992: {
-                            slidesPerView: 3,
-                        },
-                        1200: {
-                            slidesPerView: 4,
-                        },
-                    }
-                });
-            }, 500);
-            
-            // Load products
-            $.getJSON('/catalogue', { size: 8 }, function(data) {
-                if (data != null) {
-                    $.each(data, function(index, element) {
-                        $('#featured-products-container').append(`
-                            <div class="swiper-slide">
-                                <div class="card product-card">
-                                    <div class="card-img-container">
-                                        <img src="${element.imageUrl[0]}" alt="${element.name}" class="card-img-top">
-                                    </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">${element.name}</h5>
-                                        <div class="d-flex justify-content-between align-items-center mt-3">
-                                            <span class="product-price">$${element.price}</span>
-                                            <a href="detail.html?id=${element.id}" class="btn btn-primary btn-sm">View Details</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `);
-                    });
-                }
-            });
+            // Load products for categories
+            // Add your code here if needed
         });
     </script>
 </body>

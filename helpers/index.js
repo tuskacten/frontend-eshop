@@ -22,9 +22,30 @@
       send(ret);
   };
 
-  helpers.sessionMiddleware = function(err, req, res, next) {
-    if(!req.cookies.logged_in) {
-      res.session.customerId = null;
+  helpers.sessionMiddleware = function(req, res, next) {
+    try {
+      // Make sure req exists and initialize cookies if needed
+      if (!req || typeof req !== 'object') {
+        console.error("Request object is invalid");
+        return next();
+      }
+      
+      if (!req.cookies) {
+        req.cookies = {};
+      }
+      
+      // Safer property check
+      const isLoggedIn = req.cookies && typeof req.cookies === 'object' && req.cookies.logged_in;
+      
+      if (!isLoggedIn) {
+        if (req.session && typeof req.session === 'object') {
+          req.session.customerId = null;
+        }
+      }
+      next();
+    } catch (error) {
+      console.error("Session middleware error:", error);
+      next(); // Continue to next middleware even if there's an error
     }
   };
 
@@ -110,7 +131,7 @@
   /* TODO: Add documentation */
   helpers.getCustomerId = function(req, env) {
     // Check if logged in. Get customer Id
-    var logged_in = req.cookies.logged_in;
+    var logged_in = req.cookies && req.cookies.logged_in;
 
     // TODO REMOVE THIS, SECURITY RISK
     if (env == "development" && req.query.custId != null) {
@@ -118,14 +139,14 @@
     }
 
     if (!logged_in) {
-      if (!req.session.id) {
+      if (!req.session || !req.session.id) {
         throw new Error("User not logged in.");
       }
       // Use Session ID instead
       return req.session.id;
     }
 
-    return req.session.customerId;
+    return req.session && req.session.customerId;
   }
   module.exports = helpers;
 }());

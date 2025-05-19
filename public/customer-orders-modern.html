@@ -154,42 +154,61 @@
         });
         
         function loadOrders() {
+            // Lấy đơn hàng từ localStorage và loại bỏ các đơn hàng ảo bắt đầu bằng "WS"
+            let myOrders = JSON.parse(localStorage.getItem('myOrders') || '[]');
+            myOrders = myOrders.filter(o => !(typeof o.id === 'string' && o.id.startsWith('WS')));
+            // Cập nhật localStorage nếu đã xoá mục ảo
+            localStorage.setItem('myOrders', JSON.stringify(myOrders));
+            
             $.getJSON('/orders', {})
                 .done(function(data) {
+                    // Đơn hàng từ server luôn có trạng thái Shipped
+                    data.forEach(order => { 
+                        // Chỉ đặt trạng thái là Shipped nếu chưa có trạng thái
+                        if (!order.status) order.status = 'Shipped';
+                    });
+                    // Gộp đơn hàng: đơn hàng bạn tạo luôn ở đầu
+                    let allOrders = [...myOrders];
+                    data.forEach(function(order) {
+                        if (!allOrders.some(o => o.id === order.id)) {
+                            allOrders.push(order);
+                        }
+                    });
+                    console.log('allOrders to render:', allOrders);
                     // Clear the table
                     $('#tableOrders').empty();
-                    
                     // Update order count
-                    $('#orderCount').text(data.length + ' Order' + (data.length !== 1 ? 's' : ''));
-                    
+                    $('#orderCount').text(allOrders.length + ' Order' + (allOrders.length !== 1 ? 's' : ''));
                     // Check if there are orders
-                    if (data && data.length > 0) {
-                        // Hide empty state
+                    if (allOrders && allOrders.length > 0) {
                         $('#emptyOrderState').addClass('d-none');
-                        
-                        // Add each order to the table
-                        $.each(data, function(index, element) {
-                            var selfRef = element._links.self.href;
-                            var split = selfRef.split("/");
-                            var id = split[split.length - 1];
-                            
-                            // Format date
-                            var date = element.date.split(".")[0].replace("T", " ");
-                            
-                            // Determine status
-                            var statusClass = "bg-success";
-                            var statusText = "Shipped";
-                            
+                        $.each(allOrders, function(index, element) {
+                            var id = element.id;
+                            if (element._links && element._links.self && element._links.self.href) {
+                                var selfRef = element._links.self.href;
+                                var split = selfRef.split("/");
+                                id = split[split.length - 1];
+                            }
+                            var date = new Date(element.date);
+                            var formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                            var statusClass = "bg-warning";
+                            var statusText = element.status || "Processing";
+                            if (statusText === "Processing") {
+                                statusClass = "bg-warning";
+                                statusText = "Processing";
+                            } else if (statusText === "Shipped") {
+                                statusClass = "bg-success";
+                            }
                             $('#tableOrders').append(`
                                 <tr>
                                     <td class="fw-medium">#${id}</td>
-                                    <td>${date}</td>
+                                    <td>${formattedDate}</td>
                                     <td>$${(element.total).toFixed(2)}</td>
                                     <td>
                                         <span class="badge ${statusClass}">${statusText}</span>
                                     </td>
                                     <td>
-                                        <a href="customer-order-modern.html?order=${selfRef.replace(/http:\/\/(.*)\/orders/, "/orders")}" class="btn btn-sm btn-outline-primary">
+                                        <a href="customer-order-modern.html?order=${id}" class="btn btn-sm btn-outline-primary">
                                             View Details
                                         </a>
                                     </td>
@@ -197,22 +216,55 @@
                             `);
                         });
                     } else {
-                        // Show empty state
                         $('#emptyOrderState').removeClass('d-none');
                     }
                 })
                 .fail(function(jqXHR, textStatus, errorThrown) {
-                    console.error('Error loading orders:', textStatus, errorThrown);
-                    $('#tableOrders').html(`
-                        <tr>
-                            <td colspan="5" class="text-center py-4">
-                                <div class="alert alert-danger mb-0">
-                                    <i class="bi bi-exclamation-triangle me-2"></i>
-                                    Error loading orders. Please try again later.
-                                </div>
-                            </td>
-                        </tr>
-                    `);
+                    // Nếu API lỗi nhưng có dữ liệu trong localStorage, hiển thị từ localStorage
+                    if (myOrders && myOrders.length > 0) {
+                        $('#tableOrders').empty();
+                        $('#orderCount').text(myOrders.length + ' Order' + (myOrders.length !== 1 ? 's' : ''));
+                        $('#emptyOrderState').addClass('d-none');
+                        $.each(myOrders, function(index, element) {
+                            var id = element.id;
+                            var date = new Date(element.date);
+                            var formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                            var statusClass = "bg-warning";
+                            var statusText = element.status || "Processing";
+                            if (statusText === "Processing") {
+                                statusClass = "bg-warning";
+                                statusText = "Processing";
+                            } else if (statusText === "Shipped") {
+                                statusClass = "bg-success";
+                            }
+                            $('#tableOrders').append(`
+                                <tr>
+                                    <td class="fw-medium">#${id}</td>
+                                    <td>${formattedDate}</td>
+                                    <td>$${(element.total).toFixed(2)}</td>
+                                    <td>
+                                        <span class="badge ${statusClass}">${statusText}</span>
+                                    </td>
+                                    <td>
+                                        <a href="customer-order-modern.html?order=${id}" class="btn btn-sm btn-outline-primary">
+                                            View Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            `);
+                        });
+                    } else {
+                        $('#tableOrders').html(`
+                            <tr>
+                                <td colspan="5" class="text-center py-4">
+                                    <div class="alert alert-danger mb-0">
+                                        <i class="bi bi-exclamation-triangle me-2"></i>
+                                        Error loading orders. Please try again later.
+                                    </div>
+                                </td>
+                            </tr>
+                        `);
+                    }
                 });
         }
     </script>
@@ -234,6 +286,13 @@
         .account-sidebar .list-group-item:hover:not(.active) {
             background-color: rgba(0, 0, 0, 0.02);
             border-left-color: rgba(var(--primary-rgb), 0.3);
+        }
+
+        /* Order status styles */
+        .badge.bg-warning {
+            background-color: #ff9800 !important;
+            color: #fff;
+            font-weight: 600;
         }
     </style>
 </body>

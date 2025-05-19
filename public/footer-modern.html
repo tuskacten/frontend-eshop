@@ -5,28 +5,28 @@
                 <h5 class="text-uppercase mb-4">WeaveSocks</h5>
                 <p class="mb-4">The best place to find the most comfortable and stylish socks for any occasion.</p>
                 <div class="social-links">
-                    <a href="#" class="btn btn-outline-light me-2"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="btn btn-outline-light me-2"><i class="bi bi-twitter"></i></a>
-                    <a href="#" class="btn btn-outline-light me-2"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="btn btn-outline-light me-2"><i class="bi bi-pinterest"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-facebook-f fa-lg"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-pinterest fa-lg"></i></a>
                 </div>
             </div>
             <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
                 <h5 class="text-uppercase mb-4">Shop</h5>
                 <ul class="list-unstyled">
-                    <li class="mb-2"><a href="category.html?category=formal" class="footer-link">Formal Socks</a></li>
-                    <li class="mb-2"><a href="category.html?category=casual" class="footer-link">Casual Socks</a></li>
-                    <li class="mb-2"><a href="category.html?category=sport" class="footer-link">Sport Socks</a></li>
-                    <li class="mb-2"><a href="category.html?category=all" class="footer-link">All Products</a></li>
+                    <li class="mb-2"><a href="category.html?category=formal" class="footer-link"><i class="fas fa-angle-right me-2"></i>Formal Socks</a></li>
+                    <li class="mb-2"><a href="category.html?category=casual" class="footer-link"><i class="fas fa-angle-right me-2"></i>Casual Socks</a></li>
+                    <li class="mb-2"><a href="category.html?category=sport" class="footer-link"><i class="fas fa-angle-right me-2"></i>Sport Socks</a></li>
+                    <li class="mb-2"><a href="category.html?category=all" class="footer-link"><i class="fas fa-angle-right me-2"></i>All Products</a></li>
                 </ul>
             </div>
             <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
                 <h5 class="text-uppercase mb-4">Account</h5>
                 <ul class="list-unstyled">
-                    <li class="mb-2"><a href="login.html" class="footer-link">Login</a></li>
-                    <li class="mb-2"><a href="register.html" class="footer-link">Register</a></li>
-                    <li class="mb-2"><a href="customer-orders.html" class="footer-link">Orders</a></li>
-                    <li class="mb-2"><a href="customer-account.html" class="footer-link">My Account</a></li>
+                    <li class="mb-2"><a href="login.html" class="footer-link"><i class="fas fa-angle-right me-2"></i>Login</a></li>
+                    <li class="mb-2"><a href="register.html" class="footer-link"><i class="fas fa-angle-right me-2"></i>Register</a></li>
+                    <li class="mb-2"><a href="customer-orders-modern.html" class="footer-link"><i class="fas fa-angle-right me-2"></i>Orders</a></li>
+                    <li class="mb-2"><a href="customer-account-modern.html" class="footer-link"><i class="fas fa-angle-right me-2"></i>My Account</a></li>
                 </ul>
             </div>
             <div class="col-lg-5 col-md-6">
@@ -57,3 +57,42 @@
         </div>
     </div>
 </footer>
+
+<style>
+.footer-link {
+    color: #ced4da;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-block;
+}
+.footer-link:hover {
+    color: white;
+    transform: translateX(3px);
+    text-decoration: none;
+}
+.social-links a {
+    transition: all 0.2s;
+    display: inline-block;
+}
+.social-links a:hover {
+    color: #6366f1 !important;
+    transform: translateY(-3px);
+}
+.btn-primary {
+    background-color: #6366f1;
+    border-color: #6366f1;
+}
+.btn-primary:hover {
+    background-color: #4f46e5;
+    border-color: #4f46e5;
+}
+@media (max-width: 768px) {
+    .social-links {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    .footer-link i {
+        width: 15px;
+    }
+}
+</style>

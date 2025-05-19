@@ -248,9 +248,13 @@
                     <p class="mb-4">Your order has been received and is being processed. You will receive a confirmation email shortly.</p>
                     <div class="alert alert-light border mb-4">
                         <span class="text-muted">Order Number:</span>
-                        <strong id="orderNumber">000000</strong>
+                        <strong id="orderNumber">Processing</strong>
                     </div>
-                    <a href="/" class="btn btn-primary">Continue Shopping</a>
+                    <div class="alert alert-warning mb-4">
+                        <i class="bi bi-clock-history me-2"></i>
+                        <strong>Status: Processing</strong>
+                    </div>
+                    <a href="/" class="btn btn-primary" id="continueShoppingBtn">Continue Shopping</a>
                 </div>
             </div>
         </div>
@@ -298,6 +302,49 @@
             $("#placeOrderBtn").click(function() {
                 placeOrder();
             });
+            
+            // Continue shopping button click
+            $("#continueShoppingBtn").click(function() {
+                // Make sure cart is cleared before continuing, but don't affect categories
+                $.ajax({
+                    url: '/cart',
+                    type: 'DELETE',
+                    success: function() {
+                        // Save URL of products page to redirect after clearing cart
+                        if (sessionStorage.getItem('lastCategoryPage')) {
+                            window.location.href = sessionStorage.getItem('lastCategoryPage');
+                        } else {
+                            window.location.href = "/";
+                        }
+                    },
+                    error: function() {
+                        // Fallback to homepage in case of error
+                        window.location.href = "/";
+                    }
+                });
+                return false; // Prevent default link behavior
+            });
+            
+            // Handle modal hidden event to ensure cart is cleared
+            $('#orderConfirmationModal').on('hidden.bs.modal', function () {
+                console.log("Order confirmation modal was closed");
+                
+                // Ensure cart is empty and redirect to appropriate page
+                $.ajax({
+                    url: '/cart',
+                    type: 'DELETE',
+                    success: function() {
+                        if (sessionStorage.getItem('lastCategoryPage')) {
+                            window.location.href = sessionStorage.getItem('lastCategoryPage');
+                        } else {
+                            window.location.href = "/";
+                        }
+                    },
+                    error: function() {
+                        window.location.href = "/";
+                    }
+                });
+            });
         });
         
         function loadCartItems() {
@@ -306,6 +353,7 @@
                 $("#orderItems").empty();
                 
                 let subtotal = 0;
+                window.cartItems = []; // Khởi tạo mảng để lưu thông tin sản phẩm trong giỏ hàng
                 
                 if (data && data.length > 0) {
                     // Add each item to the order items table
@@ -314,6 +362,16 @@
                             if (item) {
                                 const totalPrice = cartItem.quantity * item.price;
                                 subtotal += totalPrice;
+                                
+                                // Lưu thông tin sản phẩm vào mảng cartItems
+                                window.cartItems.push({
+                                    id: item.id,
+                                    name: item.name,
+                                    price: item.price,
+                                    quantity: cartItem.quantity,
+                                    total: totalPrice,
+                                    imageUrl: item.imageUrl && item.imageUrl.length > 0 ? item.imageUrl[0] : ''
+                                });
                                 
                                 // Add item to order items
                                 $("#orderItems").append(`
@@ -469,39 +527,125 @@
                 city: address.city,
                 postcode: address.postcode,
                 country: address.country,
+                phone: address.phone,
+                email: address.email || 'user@example.com',
                 deliveryMethod: delivery.method,
+                shipping: delivery.cost,
                 paymentMethod: payment.method,
-                total: totals.total
+                paymentDetails: payment.method === 'card' ? {
+                    cardType: payment.cardDetails ? payment.cardDetails.type : 'Visa',
+                    lastFour: payment.cardDetails ? payment.cardDetails.number.slice(-4) : '0000'
+                } : {},
+                orderTotal: totals ? totals.total : 0,
+                orderItems: window.cartItems || [] // Lưu thông tin sản phẩm đã mua
             };
             
-            // Generate a random order number
-            const orderNumber = 'WS' + Math.floor(100000 + Math.random() * 900000);
-            $('#orderNumber').text(orderNumber);
-            
-            // Show confirmation modal
+            // Show confirmation modal with processing status message
             $('#orderConfirmationModal').modal('show');
+            $('.modal-body p').text('Your order has been received and is being processed. You will receive a confirmation email shortly.');
             
             // Submit order to server (dummy implementation)
-            $.post('/orders', order, function(response) {
-                console.log('Order placed successfully', response);
-                
-                // Clear cart after successful order
-                $.ajax({
-                    url: '/cart',
-                    type: 'DELETE',
-                    success: function() {
-                        console.log('Cart cleared');
-                        
-                        // Clear session storage
-                        sessionStorage.removeItem('shippingAddress');
-                        sessionStorage.removeItem('deliveryMethod');
-                        sessionStorage.removeItem('paymentMethod');
-                        sessionStorage.removeItem('orderTotals');
+            $.ajax({
+                url: '/orders',
+                type: 'POST',
+                data: JSON.stringify(order),
+                contentType: 'application/json',
+                success: function(response) {
+                    console.log('Order placed successfully', response);
+
+                    const savedOrder = response.order || {
+                        id: response.orderId || 'UNKNOWN',
+                        date: new Date().toISOString(),
+                        status: 'Processing',
+                        total: order.orderTotal,
+                        customer: {
+                            firstName: order.firstName,
+                            lastName: order.lastName,
+                            email: order.email
+                        },
+                        address: {
+                            street: order.address,
+                            city: order.city,
+                            postcode: order.postcode,
+                            country: order.country
+                        },
+                        deliveryMethod: order.deliveryMethod,
+                        paymentMethod: order.paymentMethod,
+                        orderItems: order.orderItems,
+                        shipping: order.shipping,
+                        tax: order.orderTotal * 0.2
+                    };
+
+                    // Update the modal with real order number
+                    $('#orderNumber').text(savedOrder.id);
+
+                    // Persist order to localStorage (avoid duplicates)
+                    let myOrders = JSON.parse(localStorage.getItem('myOrders') || '[]');
+                    myOrders = myOrders.filter(o => o.id !== savedOrder.id);
+                    myOrders.unshift(savedOrder);
+                    localStorage.setItem('myOrders', JSON.stringify(myOrders));
+
+                    // Also store in sessionStorage for quick lookup on detail page
+                    let sessionOrders = JSON.parse(sessionStorage.getItem('userOrders') || '[]');
+                    sessionOrders = sessionOrders.filter(o => o.id !== savedOrder.id);
+                    sessionOrders.unshift(savedOrder);
+                    sessionStorage.setItem('userOrders', JSON.stringify(sessionOrders));
+                    
+                    // Clear cart after successful order - with retry mechanism
+                    function clearCart(retryCount = 0) {
+                        $.ajax({
+                            url: '/cart',
+                            type: 'DELETE',
+                            success: function(response) {
+                                console.log('Cart cleared successfully:', response);
+                                // Verify cart is empty
+                                $.getJSON('/cart', {}, function(data) {
+                                    if (data && data.length > 0) {
+                                        console.log('Cart still has items. Retrying clear...', data);
+                                        if (retryCount < 3) {
+                                            setTimeout(function() {
+                                                clearCart(retryCount + 1);
+                                            }, 500);
+                                        } else {
+                                            console.error('Failed to clear cart after multiple attempts');
+                                        }
+                                    } else {
+                                        console.log('Cart verified empty');
+                                        // Clear only checkout-related session storage
+                                        sessionStorage.removeItem('shippingAddress');
+                                        sessionStorage.removeItem('deliveryMethod');
+                                        sessionStorage.removeItem('paymentMethod');
+                                        sessionStorage.removeItem('orderTotals');
+                                        // Ensure we don't remove any category-related session data
+                                        console.log('Only cleared checkout-related session data');
+                                    }
+                                });
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error clearing cart:', error);
+                                if (retryCount < 3) {
+                                    setTimeout(function() {
+                                        clearCart(retryCount + 1);
+                                    }, 500);
+                                }
+                            }
+                        });
                     }
-                });
-            }).fail(function(error) {
-                console.error('Error placing order', error);
-                // For demo purposes, we still show success in the demo
+                    // Start the cart clearing process
+                    clearCart();
+                    
+                    // Chuyển đến trang My Orders sau khi đặt hàng thành công
+                    $('#continueShoppingBtn').text('View My Orders');
+                    $('#continueShoppingBtn').attr('href', 'customer-orders-modern.html');
+                    
+                    setTimeout(function() {
+                        window.location.href = "customer-orders-modern.html";
+                    }, 5000); // Đợi 5 giây để người dùng thấy thông báo thành công
+                },
+                error: function(error) {
+                    console.error('Error placing order', error);
+                    // For demo purposes, we still show success in the demo
+                }
             });
         }
     </script>

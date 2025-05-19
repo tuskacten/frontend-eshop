@@ -1,17 +1,22 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
     <div class="container">
-        <a class="navbar-brand" href="index.html">
-            <img src="img/weavesocks-logo.png" alt="WeaveSocks" height="40"> WeaveSocks
+        <!-- Logo and Brand Name -->
+        <a class="navbar-brand d-flex align-items-center" href="index.html">
+            <img src="img/weavesocks-logo.png" alt="WeaveSocks" height="40" class="me-2">
+            <span>WeaveSocks</span>
         </a>
+        
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
+        
+        <!-- Navigation Items - Centered -->
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item px-2">
                     <a class="nav-link active" aria-current="page" href="index.html">Home</a>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown px-2">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Categories
                     </a>
@@ -22,40 +27,112 @@
                         <li><a class="dropdown-item" href="category.html?category=all">All Socks</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="cart.html">
-                        <i class="bi bi-bag"></i> 
-                        <span class="badge bg-primary rounded-pill" id="numItemsInCart">0</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="customer-orders.html">My Orders</a>
-                </li>
-                <li class="nav-item" id="login-menu">
-                    <a class="nav-link btn btn-outline-primary ms-lg-3 px-4" href="login.html">Login</a>
-                </li>
-                <li class="nav-item dropdown d-none" id="loggedin-menu">
-                    <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle"></i> <span id="howdy"></span>
-                    </a>
-                    <ul class="dropdown-menu border-0 shadow" aria-labelledby="accountDropdown">
-                        <li><a class="dropdown-item" href="customer-account.html">My Account</a></li>
-                        <li><a class="dropdown-item" href="customer-wishlist.html">Wishlist</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#" onclick="logout(); return false;">Logout</a></li>
-                    </ul>
+                <li class="nav-item px-2">
+                    <a class="nav-link" href="customer-orders-modern.html">My Orders</a>
                 </li>
             </ul>
         </div>
+        
+        <!-- Right Side Elements -->
+        <div class="d-flex align-items-center">
+            <!-- Shopping Cart -->
+            <div class="nav-item me-3">
+                <a class="nav-link d-flex align-items-center" href="cart.html">
+                    <i class="bi bi-cart fs-5"></i>
+                    <span class="badge bg-primary rounded-pill ms-1" id="numItemsInCart">0</span>
+                </a>
+            </div>
+            
+            <!-- Login Button or User Menu -->
+            <div class="nav-item" id="login-menu">
+                <a class="btn btn-outline-primary px-3" href="login.html">Login</a>
+            </div>
+            
+            <div class="nav-item dropdown d-none" id="loggedin-menu">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <span id="howdy" class="d-none d-sm-inline ms-1"></span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg" aria-labelledby="accountDropdown">
+                    <li class="dropdown-header">My Account</li>
+                    <li><a class="dropdown-item" href="customer-account-modern.html">
+                        <i class="bi bi-person text-primary me-2"></i> Profile
+                    </a></li>
+                    <li><a class="dropdown-item" href="customer-orders-modern.html">
+                        <i class="bi bi-box-seam text-primary me-2"></i> Orders
+                    </a></li>
+                    <li><a class="dropdown-item" href="customer-wishlist-modern.html">
+                        <i class="bi bi-heart text-primary me-2"></i> Wishlist
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#" onclick="logout(); return false;">
+                        <i class="bi bi-box-arrow-right text-danger me-2"></i> Logout
+                    </a></li>
+                </ul>
+            </div>
+        </div>
     </div>
 </nav>
+
+<style>
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #495057;
+    font-weight: 600;
+}
+.dropdown-menu-end {
+    right: 0;
+    left: auto;
+}
+.dropdown-header {
+    font-weight: 600;
+    color: #6366f1;
+    padding: 0.5rem 1rem;
+}
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    transition: all 0.2s;
+}
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(3px);
+}
+.dropdown-item i {
+    width: 20px;
+}
+/* Make navbar sticky */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+/* Improved mobile responsiveness */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        padding: 1rem 0;
+    }
+    .navbar-nav {
+        align-items: flex-start;
+    }
+    .dropdown-menu {
+        margin-left: 1rem;
+    }
+}
+</style>
+
 <script>
 $(document).ready(function() {
     $.ajaxSetup({
         contentType: "application/json; charset=utf-8"
     });
 
-    // Sử dụng endpoint /api/cart đã được mock thay vì /cart/items
+    // Load cart items count
     $.get('/api/cart', {})
     .done(function(data) {
         $('#numItemsInCart').text(data.length);
@@ -66,11 +143,23 @@ $(document).ready(function() {
         $('#numItemsInCart').text('0');
     });
 
+    // Check login status
     if ($.cookie('logged_in') != null && $.cookie('logged_in') != "") {
+        // User is logged in
         $("#login-menu").addClass("d-none");
         $("#loggedin-menu").removeClass("d-none");
-        $("#howdy").html($.cookie('logged_in'));
+        
+        // Display username
+        const username = $.cookie('logged_in');
+        $("#howdy").html(username);
+        
+        // Set first letter as avatar if available
+        if (username && username.length > 0) {
+            const firstLetter = username.charAt(0).toUpperCase();
+            $("#user-avatar").text(firstLetter);
+        }
     } else {
+        // User is not logged in
         $("#login-menu").removeClass("d-none");
         $("#loggedin-menu").addClass("d-none");
     }
@@ -80,6 +169,6 @@ function logout() {
     $.removeCookie('logged_in', { path: '/' });
     $("#login-menu").removeClass("d-none");
     $("#loggedin-menu").addClass("d-none");
-    location.reload();
+    window.location.href = "index.html";
 }
 </script>
