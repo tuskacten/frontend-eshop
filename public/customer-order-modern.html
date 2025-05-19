@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="all,follow">
+    <meta name="googlebot" content="index,follow,snippet,archive">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="WeaveSocks - Modern Microservices Demo Shop">
+    <meta name="author" content="WeaveSocks">
+    
+    <title>WeaveSocks - Order Details</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.png">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Animation CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="css/modern-style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar will be loaded here -->
+    <div id="navbar"></div>
+    
+    <!-- Page Header -->
+    <section class="bg-primary text-white py-5 mb-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="display-4 fw-bold">Order Details</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/" class="text-white">Home</a></li>
+                            <li class="breadcrumb-item"><a href="customer-orders-modern.html" class="text-white">My Orders</a></li>
+                            <li class="breadcrumb-item active text-white-50" id="orderIdBreadcrumb">Order #000000</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-6 d-none d-md-block text-end">
+                    <i class="bi bi-box-seam display-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Order Content -->
+    <div class="container mb-5">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4">
+                <div class="card border-0 shadow-sm account-sidebar">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">My Account</h5>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a href="customer-orders-modern.html" class="list-group-item list-group-item-action active">
+                            <i class="bi bi-box-seam me-2"></i> My Orders
+                        </a>
+                        <a href="customer-wishlist-modern.html" class="list-group-item list-group-item-action">
+                            <i class="bi bi-heart me-2"></i> My Wishlist
+                        </a>
+                        <a href="customer-account-modern.html" class="list-group-item list-group-item-action">
+                            <i class="bi bi-person me-2"></i> My Profile
+                        </a>
+                        <a href="#" onclick="logout(); return false;" class="list-group-item list-group-item-action text-danger">
+                            <i class="bi bi-box-arrow-right me-2"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Details Content -->
+            <div class="col-lg-9">
+                <!-- Order Summary -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Order Summary</h5>
+                            <span class="badge bg-success" id="orderStatus">Shipped</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <h6 class="mb-3">Order Information</h6>
+                                <p class="mb-1"><strong>Order ID:</strong> <span id="orderId">#000000</span></p>
+                                <p class="mb-1"><strong>Order Date:</strong> <span id="orderDate">-</span></p>
+                                <p class="mb-1"><strong>Payment Method:</strong> <span id="paymentMethod">-</span></p>
+                                <p class="mb-1"><strong>Shipping Method:</strong> <span id="shippingMethod">-</span></p>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <h6 class="mb-3">Shipping Address</h6>
+                                <p class="mb-0" id="shippingAddress">
+                                    Loading address...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order Items -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Order Items</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Product</th>
+                                        <th class="text-center">Price</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-end">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="orderItems">
+                                    <!-- Order items will be loaded here -->
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+                                        <td class="text-end" id="orderSubtotal">$0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-end"><strong>Shipping:</strong></td>
+                                        <td class="text-end" id="orderShipping">$0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-end"><strong>Tax:</strong></td>
+                                        <td class="text-end" id="orderTax">$0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                        <td class="text-end fw-bold fs-5 text-primary" id="orderTotal">$0.00</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order Actions -->
+                <div class="d-flex justify-content-between">
+                    <a href="customer-orders-modern.html" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Orders
+                    </a>
+                    <a href="#" class="btn btn-primary" id="reorderBtn">
+                        <i class="bi bi-cart-plus me-2"></i>Reorder
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer will be loaded here -->
+    <div id="footer"></div>
+    
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Cookie JS -->
+    <script src="js/js.cookie.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/client.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Load components
+            $("#navbar").load("navbar-modern.html");
+            $("#footer").load("footer-modern.html");
+            
+            // Check if user is logged in
+            if ($.cookie('logged_in') == null || $.cookie('logged_in') == "") {
+                window.location.href = "login-modern.html";
+            }
+            
+            // Get order ID from URL
+            let params = (new URL(document.location)).searchParams;
+            let orderId = params.get("order");
+            
+            if (orderId) {
+                // Load order details
+                loadOrderDetails(orderId);
+            } else {
+                // Redirect to orders page if no order ID is provided
+                window.location.href = "customer-orders-modern.html";
+            }
+            
+            // Reorder button click
+            $("#reorderBtn").click(function(e) {
+                e.preventDefault();
+                reorderItems();
+            });
+        });
+        
+        function loadOrderDetails(orderId) {
+            // First check if order exists in sessionStorage
+            let sessionOrders = JSON.parse(sessionStorage.getItem('userOrders') || '[]');
+            let orderFromSession = sessionOrders.find(order => order.id === orderId);
+            
+            if (orderFromSession) {
+                displayOrderDetails(orderFromSession);
+            } else {
+                // If not in sessionStorage, fetch from API
+                $.getJSON('/orders/' + orderId, {})
+                    .done(function(order) {
+                        displayOrderDetails(order);
+                    })
+                    .fail(function(jqXHR, textStatus, errorThrown) {
+                        console.error('Error loading order details:', textStatus, errorThrown);
+                        alert('Failed to load order details. Please try again later.');
+                    });
+            }
+        }
+        
+        function displayOrderDetails(order) {
+            // Update order ID in breadcrumb and header
+            $('#orderIdBreadcrumb').text('Order #' + order.id);
+            $('#orderId').text('#' + order.id);
+            
+            // Format date
+            if (order.date) {
+                let date = new Date(order.date);
+                $('#orderDate').text(date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
+            }
+            
+            // Payment method
+            $('#paymentMethod').text(formatPaymentMethod(order.paymentMethod));
+            
+            // Shipping method
+            $('#shippingMethod').text(formatDeliveryMethod(order.deliveryMethod));
+            
+            // Shipping address
+            if (order.customer && order.address) {
+                $('#shippingAddress').html(`
+                    ${order.customer.firstName} ${order.customer.lastName}<br>
+                    ${order.address.street}<br>
+                    ${order.address.city}, ${order.address.postcode}<br>
+                    ${order.address.country}
+                `);
+            }
+            
+            // Order status
+            $('#orderStatus').text(order.status || 'Processing');
+            if (order.status === 'Processing') {
+                $('#orderStatus').removeClass('bg-success').addClass('bg-warning');
+            } else if (order.status === 'Shipped') {
+                $('#orderStatus').removeClass('bg-warning').addClass('bg-success');
+            }
+            
+            // Order items
+            $('#orderItems').empty();
+            
+            let subtotal = 0;
+            
+            if (order.items && order.items.length > 0) {
+                $.each(order.items, function(index, item) {
+                    // Get product details from API or assume they are embedded in the order
+                    const itemSubtotal = item.quantity * item.unitPrice;
+                    subtotal += itemSubtotal;
+                    
+                    // Get product details if not included
+                    $.getJSON('/catalogue/' + item.itemId, {}, function(product) {
+                        let productName = product ? product.name : 'Product';
+                        let productImage = product && product.imageUrl ? product.imageUrl[0] : 'img/placeholder.jpg';
+                        
+                        $('#orderItems').append(`
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="${productImage}" alt="${productName}" class="img-fluid rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                        <div class="ms-3">
+                                            <h6 class="mb-0">${productName}</h6>
+                                            <small class="text-muted">ID: ${item.itemId}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center">$${item.unitPrice.toFixed(2)}</td>
+                                <td class="text-center">${item.quantity}</td>
+                                <td class="text-end">$${itemSubtotal.toFixed(2)}</td>
+                            </tr>
+                        `);
+                    });
+                });
+            } else if (order.orderItems && order.orderItems.length > 0) {
+                // Display order items from the saved order
+                $.each(order.orderItems, function(index, item) {
+                    const itemSubtotal = item.total || (item.quantity * item.price);
+                    subtotal += itemSubtotal;
+                    
+                    $('#orderItems').append(`
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="${item.imageUrl || 'img/placeholder.jpg'}" alt="${item.name}" class="img-fluid rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">${item.name}</h6>
+                                        <small class="text-muted">ID: ${item.id}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center">$${item.price.toFixed(2)}</td>
+                            <td class="text-center">${item.quantity}</td>
+                            <td class="text-end">$${itemSubtotal.toFixed(2)}</td>
+                        </tr>
+                    `);
+                });
+            }
+            
+            // Order totals
+            const shipping = order.shipping || 4.99;
+            const tax = order.tax || subtotal * 0.2;
+            const total = order.total || subtotal + shipping + tax;
+            
+            $('#orderSubtotal').text('$' + subtotal.toFixed(2));
+            $('#orderShipping').text(shipping === 0 ? 'FREE' : '$' + shipping.toFixed(2));
+            $('#orderTax').text('$' + tax.toFixed(2));
+            $('#orderTotal').text('$' + total.toFixed(2));
+        }
+        
+        function formatPaymentMethod(method) {
+            if (!method) return 'Credit Card';
+            
+            switch(method) {
+                case 'card': return 'Credit Card';
+                case 'paypal': return 'PayPal';
+                case 'applepay': return 'Apple Pay';
+                default: return method.charAt(0).toUpperCase() + method.slice(1);
+            }
+        }
+        
+        function formatDeliveryMethod(method) {
+            if (!method) return 'Standard Delivery';
+            
+            switch(method) {
+                case 'standard': return 'Standard Delivery (3-5 business days)';
+                case 'express': return 'Express Delivery (1-2 business days)';
+                case 'nextDay': return 'Next Day Delivery';
+                default: return method.charAt(0).toUpperCase() + method.slice(1);
+            }
+        }
+        
+        function reorderItems() {
+            // Get order ID from URL
+            let params = (new URL(document.location)).searchParams;
+            let orderId = params.get("order");
+            
+            // Find order
+            let sessionOrders = JSON.parse(sessionStorage.getItem('userOrders') || '[]');
+            let order = sessionOrders.find(o => o.id === orderId);
+            
+            if (!order) {
+                // Try to get from API
+                $.getJSON('/orders/' + orderId, {})
+                    .done(function(orderData) {
+                        processReorder(orderData);
+                    })
+                    .fail(function() {
+                        alert('Failed to load order details for reordering. Please try again later.');
+                    });
+            } else {
+                processReorder(order);
+            }
+        }
+        
+        function processReorder(order) {
+            // Clear existing cart
+            $.ajax({
+                url: '/cart',
+                type: 'DELETE',
+                success: function() {
+                    // Add items to cart
+                    let items = [];
+                    
+                    if (order.items && order.items.length > 0) {
+                        items = order.items.map(item => ({
+                            id: item.itemId,
+                            quantity: item.quantity
+                        }));
+                    } else if (order.orderItems && order.orderItems.length > 0) {
+                        items = order.orderItems.map(item => ({
+                            id: item.id,
+                            quantity: item.quantity
+                        }));
+                    }
+                    
+                    // Add each item to cart
+                    let itemsProcessed = 0;
+                    
+                    if (items.length > 0) {
+                        $.each(items, function(index, item) {
+                            $.ajax({
+                                url: '/cart',
+                                type: 'POST',
+                                data: JSON.stringify(item),
+                                contentType: 'application/json',
+                                success: function() {
+                                    itemsProcessed++;
+                                    if (itemsProcessed === items.length) {
+                                        // All items added to cart, redirect to cart page
+                                        window.location.href = "basket.html";
+                                    }
+                                },
+                                error: function() {
+                                    itemsProcessed++;
+                                }
+                            });
+                        });
+                    } else {
+                        alert('No items found in this order to reorder.');
+                    }
+                },
+                error: function() {
+                    alert('Failed to clear cart before reordering. Please try again later.');
+                }
+            });
+        }
+    </script>
+    
+    <style>
+        /* Account sidebar styles */
+        .account-sidebar .list-group-item {
+            border-left: 3px solid transparent;
+            padding: 0.75rem 1.25rem;
+        }
+        
+        .account-sidebar .list-group-item.active {
+            background-color: rgba(var(--primary-rgb), 0.1);
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .account-sidebar .list-group-item:hover:not(.active) {
+            background-color: rgba(0, 0, 0, 0.02);
+            border-left-color: rgba(var(--primary-rgb), 0.3);
+        }
+    </style>
+</body>
+</html> 

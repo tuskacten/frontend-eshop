@@ -138,7 +138,7 @@
                             <button class="btn btn-primary btn-lg" id="addToCart">
                                 <i class="bi bi-cart-plus me-2"></i>Add to Cart
                             </button>
-                            <button class="btn btn-outline-primary">
+                            <button class="btn btn-outline-primary" id="addToWishlist">
                                 <i class="bi bi-heart me-2"></i>Add to Wishlist
                             </button>
                         </div>
@@ -261,7 +261,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="addedToCartModalLabel"><i class="bi bi-check-circle me-2"></i>Item Added to Cart</h5>
+                    <h5 class="modal-title" id="addedToCartModalLabel"><i class="bi bi-check-circle me-2"></i>Đã thêm vào giỏ hàng</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -275,8 +275,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Continue Shopping</button>
-                    <a href="basket.html" class="btn btn-primary">View Cart</a>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Tiếp tục mua sắm</button>
+                    <a href="basket.html" class="btn btn-primary">Xem giỏ hàng</a>
                 </div>
             </div>
         </div>
@@ -335,50 +335,78 @@
             $("#addToCart").click(function() {
                 addToCartFromDetail();
             });
+            
+            // Add to wishlist button
+            $("#addToWishlist").click(function() {
+                addToWishlist();
+            });
         });
         
         function fetchProductDetails(productId) {
-            $.getJSON('/catalogue/' + productId, {}, function(data) {
-                if (data) {
-                    // Update product details
-                    $("#productName").text(data.name);
-                    $("#breadcrumbProductName").text(data.name);
-                    $("#productPrice").text('$' + data.price);
-                    $("#productDescription").text(data.description || 'No description available');
-                    $("#productId").text(data.id);
-                    
-                    // Update product images
-                    $("#productImages").empty();
-                    $("#productThumbnails").empty();
-                    
-                    if (data.imageUrl && data.imageUrl.length > 0) {
-                        $.each(data.imageUrl, function(index, imgUrl) {
-                            // Add to carousel
-                            $("#productImages").append(`
-                                <div class="carousel-item ${index === 0 ? 'active' : ''}">
-                                    <img src="${imgUrl}" class="d-block w-100" alt="${data.name}">
-                                </div>
-                            `);
-                            
-                            // Add to thumbnails
-                            $("#productThumbnails").append(`
-                                <div class="col-3">
-                                    <img src="${imgUrl}" class="img-thumbnail" alt="${data.name}" 
-                                         onclick="$('#productCarousel').carousel(${index})">
-                                </div>
-                            `);
-                        });
+            console.log("Fetching product details for ID:", productId);
+            
+            $.getJSON('/api/catalogue/' + productId, {})
+                .done(function(data) {
+                    console.log("Product details data:", data);
+                    if (data) {
+                        // Update product details
+                        $("#productName").text(data.name);
+                        $("#breadcrumbProductName").text(data.name);
+                        $("#productPrice").text('$' + data.price);
+                        $("#productDescription").text(data.description || 'No description available');
+                        $("#productId").text(data.id);
+                        
+                        // Update product images
+                        $("#productImages").empty();
+                        $("#productThumbnails").empty();
+                        
+                        if (data.imageUrl && data.imageUrl.length > 0) {
+                            $.each(data.imageUrl, function(index, imgUrl) {
+                                // Add to carousel
+                                $("#productImages").append(`
+                                    <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                                        <img src="${imgUrl}" class="d-block w-100" alt="${data.name}">
+                                    </div>
+                                `);
+                                
+                                // Add to thumbnails
+                                $("#productThumbnails").append(`
+                                    <div class="col-3">
+                                        <img src="${imgUrl}" class="img-thumbnail" alt="${data.name}" 
+                                             onclick="$('#productCarousel').carousel(${index})">
+                                    </div>
+                                `);
+                            });
+                        }
                     }
-                }
-            });
+                })
+                .fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("Error fetching product details:", textStatus, errorThrown);
+                    // Display error message to user
+                    $(".card-body:first").prepend(
+                        '<div class="alert alert-danger mb-4">' +
+                        '<strong>Error:</strong> Failed to load product details. Please try again later.' +
+                        '</div>'
+                    );
+                });
         }
         
         function fetchRelatedProducts() {
-            $.getJSON('/catalogue?size=4', {}, function(data) {
+            // Add debug logging
+            console.log("Fetching related products...");
+            
+            // Change to use /api/catalogue instead of /catalogue
+            $.getJSON('/api/catalogue?size=4', {}, function(data) {
+                console.log("Related products data:", data);
                 $("#relatedProducts").empty();
                 
                 if (data && data.length > 0) {
                     $.each(data, function(index, element) {
+                        // Skip the current product
+                        if (element.id === productId) {
+                            return;
+                        }
+                        
                         $("#relatedProducts").append(`
                             <div class="col-md-6 col-lg-3">
                                 <div class="card product-card h-100 border-0 shadow-sm">
@@ -396,7 +424,17 @@
                             </div>
                         `);
                     });
+                    
+                    // If no related products were added (all were filtered out)
+                    if ($("#relatedProducts").children().length === 0) {
+                        $("#relatedProducts").append('<div class="col-12 text-center py-4"><p class="text-muted">No related products available at this time.</p></div>');
+                    }
+                } else {
+                    $("#relatedProducts").append('<div class="col-12 text-center py-4"><p class="text-muted">No related products available at this time.</p></div>');
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error loading related products:", textStatus, errorThrown);
+                $("#relatedProducts").append('<div class="col-12 text-center py-4"><p class="text-muted">Failed to load related products. Please try again later.</p></div>');
             });
         }
         
@@ -442,33 +480,72 @@
                 }
             });
         }
+        
+        // Thêm hàm xử lý chức năng thêm vào wishlist
+        function addToWishlist() {
+            // Kiểm tra đăng nhập
+            if (!$.cookie('logged_in')) {
+                // Hiển thị thông báo yêu cầu đăng nhập
+                alert('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích.');
+                return;
+            }
+            
+            // Prepare data for wishlist API
+            let wishlistItem = {
+                id: productId
+            };
+            
+            // Add to wishlist via API
+            $.ajax({
+                url: '/api/wishlist',
+                type: 'POST',
+                data: JSON.stringify(wishlistItem),
+                contentType: 'application/json',
+                success: function(data) {
+                    // Hiển thị thông báo thành công
+                    showWishlistSuccessMessage();
+                },
+                error: function(xhr) {
+                    console.log('Error adding to wishlist:', xhr);
+                    alert('Failed to add item to wishlist. Please try again.');
+                }
+            });
+        }
+        
+        // Hàm hiển thị thông báo đã thêm vào wishlist thành công
+        function showWishlistSuccessMessage() {
+            // Tạo thông báo toast
+            var toast = $('<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">' +
+                '<div class="toast-header bg-primary text-white">' +
+                '<strong class="me-auto">Đã thêm vào danh sách yêu thích</strong>' +
+                '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>' +
+                '</div>' +
+                '<div class="toast-body">' +
+                '<div class="d-flex align-items-center">' +
+                '<img src="' + $('#productImages .carousel-item.active img').attr('src') + '" class="me-2" style="width: 50px; height: 50px; object-fit: cover;">' +
+                '<div>' +
+                '<strong>' + $('#productName').text() + '</strong>' +
+                '</div>' +
+                '</div>' +
+                '<div class="mt-2 pt-2 border-top">' +
+                '<a href="customer-wishlist-modern.html" class="btn btn-primary btn-sm">Xem danh sách yêu thích</a>' +
+                '</div>' +
+                '</div>' +
+                '</div>');
+
+            // Thêm toast vào container (tạo nếu chưa có)
+            var toastContainer = $('#toast-container');
+            if (toastContainer.length === 0) {
+                toastContainer = $('<div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3"></div>');
+                $('body').append(toastContainer);
+            }
+            
+            toastContainer.append(toast);
+            
+            // Hiển thị toast
+            var bsToast = new bootstrap.Toast(toast[0]);
+            bsToast.show();
+        }
     </script>
-<!-- Modal thông báo thêm vào giỏ hàng thành công -->
-<div class="modal fade" id="addedToCartModal" tabindex="-1" aria-labelledby="addedToCartModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="addedToCartModalLabel">Đã thêm vào giỏ hàng</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="d-flex align-items-center">
-                    <div class="me-3" style="width: 80px;">
-                        <img id="modalProductImage" src="" class="img-fluid" alt="Product Image">
-                    </div>
-                    <div>
-                        <h5 id="modalProductName">Product Name</h5>
-                        <p class="mb-0" id="modalProductQuantity">Quantity: 1</p>
-                        <p class="mb-0" id="modalProductPrice">$0.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tiếp tục mua sắm</button>
-                <a href="basket.html" class="btn btn-primary">Xem giỏ hàng</a>
-            </div>
-        </div>
-    </div>
-</div>
 </body>
 </html>

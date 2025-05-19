@@ -24,38 +24,84 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="cart.html">
-                        <i class="bi bi-bag"></i> 
+                        <i class="fas fa-shopping-cart"></i> 
                         <span class="badge bg-primary rounded-pill" id="numItemsInCart">0</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="customer-orders.html">My Orders</a>
+                    <a class="nav-link" href="customer-orders-modern.html">My Orders</a>
                 </li>
                 <li class="nav-item" id="login-menu">
                     <a class="nav-link btn btn-outline-primary ms-lg-3 px-4" href="login.html">Login</a>
                 </li>
                 <li class="nav-item dropdown d-none" id="loggedin-menu">
-                    <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle"></i> <span id="howdy"></span>
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="user-avatar mr-2" id="user-avatar">U</div> <span id="howdy"></span>
                     </a>
-                    <ul class="dropdown-menu border-0 shadow" aria-labelledby="accountDropdown">
-                        <li><a class="dropdown-item" href="customer-account.html">My Account</a></li>
-                        <li><a class="dropdown-item" href="customer-wishlist.html">Wishlist</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg" aria-labelledby="accountDropdown">
+                        <li class="dropdown-header">My Account</li>
+                        <li><a class="dropdown-item" href="customer-account-modern.html">
+                            <i class="fas fa-user mr-2 text-primary"></i> Profile
+                        </a></li>
+                        <li><a class="dropdown-item" href="customer-orders-modern.html">
+                            <i class="fas fa-shopping-bag mr-2 text-primary"></i> Orders
+                        </a></li>
+                        <li><a class="dropdown-item" href="customer-wishlist-modern.html">
+                            <i class="fas fa-heart mr-2 text-primary"></i> Wishlist
+                        </a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#" onclick="logout(); return false;">Logout</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout(); return false;">
+                            <i class="fas fa-sign-out-alt mr-2 text-danger"></i> Logout
+                        </a></li>
                     </ul>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
+
+<style>
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #495057;
+    font-weight: 600;
+    margin-right: 8px;
+}
+.dropdown-menu-end {
+    right: 0;
+    left: auto;
+}
+.dropdown-header {
+    font-weight: 600;
+    color: #6366f1;
+    padding: 0.5rem 1rem;
+}
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    transition: all 0.2s;
+}
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(3px);
+}
+.dropdown-item i {
+    width: 20px;
+}
+</style>
+
 <script>
 $(document).ready(function() {
     $.ajaxSetup({
         contentType: "application/json; charset=utf-8"
     });
 
-    // Sử dụng endpoint /api/cart đã được mock thay vì /cart/items
+    // Load cart items count
     $.get('/api/cart', {})
     .done(function(data) {
         $('#numItemsInCart').text(data.length);
@@ -66,11 +112,23 @@ $(document).ready(function() {
         $('#numItemsInCart').text('0');
     });
 
+    // Check login status
     if ($.cookie('logged_in') != null && $.cookie('logged_in') != "") {
+        // User is logged in
         $("#login-menu").addClass("d-none");
         $("#loggedin-menu").removeClass("d-none");
-        $("#howdy").html($.cookie('logged_in'));
+        
+        // Display username
+        const username = $.cookie('logged_in');
+        $("#howdy").html(username);
+        
+        // Set first letter as avatar if available
+        if (username && username.length > 0) {
+            const firstLetter = username.charAt(0).toUpperCase();
+            $("#user-avatar").text(firstLetter);
+        }
     } else {
+        // User is not logged in
         $("#login-menu").removeClass("d-none");
         $("#loggedin-menu").addClass("d-none");
     }
@@ -80,6 +138,6 @@ function logout() {
     $.removeCookie('logged_in', { path: '/' });
     $("#login-menu").removeClass("d-none");
     $("#loggedin-menu").addClass("d-none");
-    location.reload();
+    window.location.href = "index.html";
 }
 </script>
